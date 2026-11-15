@@ -1,0 +1,8 @@
+<GridLayout #pad class="pad" (touch)="onTouch($any($event))">
+  <Label text="Sign here" class="pad-placeholder" verticalAlignment="center" [visibility]="empty ? 'visible' : 'collapse'"></Label>
+  <GridLayout rows="auto" columns="auto, *" verticalAlignment="bottom" class="pad-baseline-row">
+    <Label col="0" text="✕" class="pad-x"></Label>
+    <GridLayout col="1" height="1.5" class="pad-baseline" verticalAlignment="center"></GridLayout>
+  </GridLayout>
+  <Image #ink stretch="fill" isUserInteractionEnabled="false"></Image>
+</GridLayout>

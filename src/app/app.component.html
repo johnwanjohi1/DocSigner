@@ -1,3 +1,137 @@
-<GridLayout>
-  <page-router-outlet></page-router-outlet>
-</GridLayout>
+<GestureRootView>
+  <Drawer #drawer backdropColor="rgba(17,12,60,0.5)" leftDrawerMode="slide">
+    <!-- ============ Side drawer menu ============ -->
+    <GridLayout id="LeftDrawer" rows="auto, *, auto" width="300" class="drawer">
+      <GridLayout row="0" rows="auto, auto, auto" class="drawer-header">
+        <GridLayout rows="auto" row="0" columns="auto, *">
+          <GridLayout col="0" class="drawer-logo">
+            <Image src="~/assets/splash/logo.png" width="40" height="40"></Image>
+          </GridLayout>
+          <StackLayout col="1" class="ml-3" verticalAlignment="center">
+            <Label text="DocSigner" class="drawer-title" (longPress)="devRecreate()"></Label>
+            <Label text="Sign anything, anywhere" class="drawer-subtitle"></Label>
+          </StackLayout>
+        </GridLayout>
+        @if (signatures.signature(); as s) {
+          <GridLayout row="1" class="drawer-sig">
+            <Image [src]="s.image" height="46" stretch="aspectFit" horizontalAlignment="left"></Image>
+          </GridLayout>
+          <Label row="2" text="Your signature" class="drawer-sig-caption"></Label>
+        }
+      </GridLayout>
+
+      <ScrollView row="1">
+        <StackLayout class="drawer-list">
+          @for (item of navItems; track item.title) {
+            <GridLayout rows="auto" columns="auto, *" class="drawer-item" [class.drawer-item-active]="currentUrl() === item.route" (tap)="onItem(item)">
+              <Label col="0" [text]="item.badge" class="drawer-badge" [backgroundColor]="item.color"></Label>
+              <StackLayout col="1" verticalAlignment="center" class="ml-4">
+                <Label [text]="item.title" class="drawer-item-label"></Label>
+                <Label [text]="item.subtitle" class="drawer-item-sub"></Label>
+              </StackLayout>
+            </GridLayout>
+          }
+
+          <Label text="SIGN SOMETHING" class="drawer-section"></Label>
+          @for (item of signItems; track item.title) {
+            <GridLayout rows="auto" columns="auto, *" class="drawer-item" (tap)="onItem(item)">
+              <Label col="0" [text]="item.badge" class="drawer-badge drawer-badge-sm" [backgroundColor]="item.color"></Label>
+              <Label col="1" [text]="item.title" class="drawer-item-label ml-4" verticalAlignment="center"></Label>
+            </GridLayout>
+          }
+        </StackLayout>
+      </ScrollView>
+
+      <StackLayout row="2" class="drawer-footer">
+        <GridLayout rows="auto" columns="auto, *, auto" class="drawer-pro" (tap)="openPro()">
+          <Label col="0" text="👑" class="drawer-pro-icon"></Label>
+          <StackLayout col="1" class="ml-3" verticalAlignment="center">
+            <Label [text]="pro.isPro() ? 'DocSigner Pro' : 'Upgrade to Pro'" class="drawer-pro-title"></Label>
+            <Label [text]="pro.isPro() ? 'All features unlocked' : pro.freeLeft() + ' free signings left this month'" class="drawer-pro-sub"></Label>
+          </StackLayout>
+          @if (!pro.isPro()) {
+            <Label col="2" text="GO" class="drawer-pro-go" verticalAlignment="center"></Label>
+          }
+        </GridLayout>
+        <GridLayout rows="auto" columns="*, *" class="mt-2">
+          <Label col="0" text="↺  Intro" class="drawer-mini" (tap)="replayIntro()"></Label>
+          <Label col="1" text="ⓘ  About" class="drawer-mini" (tap)="about()"></Label>
+        </GridLayout>
+      </StackLayout>
+    </GridLayout>
+
+    <!-- ============ Pages ============ -->
+    <GridLayout id="MainContent">
+      <page-router-outlet></page-router-outlet>
+    </GridLayout>
+  </Drawer>
+
+  <!-- ============ Bottom-sheet dialogs (replace the system alert/confirm popups) ============ -->
+  @if (dialogs.current(); as d) {
+    <GridLayout class="sheet-scrim" (loaded)="onBackdropLoaded($any($event))" (tap)="onBackdropTap(d)">
+      <StackLayout class="sheet" verticalAlignment="bottom" [paddingBottom]="sheetBottom()" (loaded)="onCardLoaded($any($event))" (tap)="noop()">
+        <GridLayout class="sheet-grip" horizontalAlignment="center"></GridLayout>
+        <StackLayout class="confirm">
+          <GridLayout class="confirm-ring" horizontalAlignment="center" [backgroundColor]="tint(d.color, 0.16)">
+            <GridLayout class="confirm-badge" horizontalAlignment="center" verticalAlignment="center" [backgroundImage]="shine(d.color)">
+              <Label [text]="d.icon" class="confirm-icon" horizontalAlignment="center" verticalAlignment="center"></Label>
+            </GridLayout>
+          </GridLayout>
+          <Label [text]="d.title" class="confirm-title" textWrap="true"></Label>
+          @if (d.message) {
+            <Label [text]="d.message" class="confirm-msg" textWrap="true"></Label>
+          }
+          @if (d.actions?.length) {
+            <StackLayout class="confirm-actions">
+              @for (a of d.actions; track a.value; let first = $first) {
+                @if (first) {
+                  <Label [text]="(a.icon ? a.icon + '  ' : '') + a.text" class="sheet-btn mb-2" [backgroundImage]="shine(d.color)" (tap)="closeDialog(a.value)"></Label>
+                } @else {
+                  <Label [text]="(a.icon ? a.icon + '  ' : '') + a.text" class="sheet-btn sheet-btn-alt mb-2" [color]="d.color" [backgroundColor]="tint(d.color, 0.12)" (tap)="closeDialog(a.value)"></Label>
+                }
+              }
+            </StackLayout>
+          } @else {
+            <GridLayout rows="auto" [columns]="d.cancelText ? '*, *' : '*'" class="confirm-actions">
+              @if (d.cancelText) {
+                <Label col="0" [text]="d.cancelText" class="sheet-btn sheet-btn-alt" [color]="d.destructive ? '#374151' : d.color" [backgroundColor]="d.destructive ? '#f1f2f6' : tint(d.color, 0.12)" marginRight="6" (tap)="closeDialog('cancel')"></Label>
+              }
+              <Label [col]="d.cancelText ? 1 : 0" [text]="d.okText" class="sheet-btn" [backgroundImage]="shine(d.color)" [marginLeft]="d.cancelText ? 6 : 0" (tap)="closeDialog('ok')"></Label>
+            </GridLayout>
+          }
+        </StackLayout>
+      </StackLayout>
+    </GridLayout>
+  }
+
+  <!-- ============ Animated, illustrated splash ============ -->
+  @if (showSplash()) {
+    <GridLayout #splash rows="*, auto, auto, auto, auto, *" class="splash" (tap)="skipSplash()">
+      <!-- soft decorative blobs -->
+      <GridLayout rowSpan="6" width="320" height="320" class="splash-blob" horizontalAlignment="left" verticalAlignment="top" marginLeft="-120" marginTop="-80"></GridLayout>
+      <GridLayout rowSpan="6" width="260" height="260" class="splash-blob" horizontalAlignment="right" verticalAlignment="bottom" marginRight="-90" marginBottom="-60"></GridLayout>
+      <GridLayout rowSpan="6" width="120" height="120" class="splash-blob splash-blob-sm" horizontalAlignment="right" verticalAlignment="top" marginRight="40" marginTop="140"></GridLayout>
+
+      <!-- illustration stage -->
+      <GridLayout row="1" width="320" height="250" class="mb-6">
+        <Image #cardPhoto src="~/assets/splash/photo.png" width="138" height="160" class="splash-card"></Image>
+        <Image #cardWord src="~/assets/splash/doc-word.png" width="130" height="166" class="splash-card"></Image>
+        <Image #cardPdf src="~/assets/splash/doc-pdf.png" width="150" height="192" class="splash-card"></Image>
+        <Image #pen src="~/assets/splash/pen.png" width="96" height="96" horizontalAlignment="left" verticalAlignment="bottom" marginLeft="56" marginBottom="-6"></Image>
+      </GridLayout>
+
+      <Label #title row="2" text="DocSigner" class="splash-title"></Label>
+      <GridLayout #sigClip row="3" height="54" width="240" clipToBounds="true" horizontalAlignment="center" class="splash-sig-clip">
+        <Image src="~/assets/splash/signature-white.png" width="240" height="54" horizontalAlignment="left" stretch="aspectFit"></Image>
+      </GridLayout>
+      <StackLayout row="4">
+        <Label #tagline text="Sign PDFs, Word documents & photos in seconds" class="splash-tagline" textWrap="true"></Label>
+        <StackLayout #dots orientation="horizontal" horizontalAlignment="center" class="mt-8">
+          <Label class="splash-dot"></Label>
+          <Label class="splash-dot splash-dot-mid"></Label>
+          <Label class="splash-dot splash-dot-faint"></Label>
+        </StackLayout>
+      </StackLayout>
+    </GridLayout>
+  }
+</GestureRootView>

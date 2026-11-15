@@ -1,0 +1,203 @@
+<ActionBar [title]="file()?.kind === 'docx' ? 'Sign Word document' : file()?.kind === 'pdf' ? 'Sign PDF' : 'Sign photo'" class="action-bar">
+  <NavigationButton text="Back" icon="res://ic_arrow_back" (tap)="goBack()"></NavigationButton>
+  <ActionItem icon="res://ic_edit" text="Signature" ios.systemIcon="16" ios.position="right" android.position="actionBar" (tap)="editSignature()"></ActionItem>
+</ActionBar>
+
+<GridLayout class="page-bg">
+  @if (file(); as f) {
+    @if (f.kind !== 'docx') {
+      <!-- ============ PDF / image placement ============ -->
+      <GridLayout rows="auto, auto, *, auto">
+        <Label row="0" [text]="f.name" class="text-gray-700 font-bold text-base px-4 pt-3" textWrap="false"></Label>
+        <Label row="1" textWrap="true" class="text-gray-500 text-sm px-4 pb-2"
+          text="Drag the signature into place, or tap where it should go."></Label>
+
+        <StackLayout row="2">
+          <StackLayout class="px-4">
+            <AbsoluteLayout [width]="viewW()" [height]="viewH()" horizontalAlignment="center"
+              class="bg-white" androidElevation="4" (tap)="onPageTap($any($event))">
+              <Image [src]="preview()" [width]="viewW()" [height]="viewH()" stretch="fill"></Image>
+              @if (sig(); as s) {
+                <Image [src]="s.image" [left]="sigLeft()" [top]="sigTop()" [width]="sigW()" [height]="sigH()"
+                  stretch="fill" class="sig-overlay" (pan)="onPan($any($event))" (tap)="onSigTap()"></Image>
+              }
+            </AbsoluteLayout>
+
+            @if (f.kind === 'pdf' && pageCount() > 1) {
+              <!-- pill pager: round chevrons, page counter, dots -->
+              <GridLayout rows="auto" columns="auto, *, auto" class="pager" horizontalAlignment="center">
+                <Label col="0" text="‹" class="pager-btn" [class.pager-btn-off]="pageIndex() === 0" (tap)="prevPage()"></Label>
+                <StackLayout col="1" verticalAlignment="center" class="pager-mid">
+                  <Label [text]="'Page ' + (pageIndex() + 1) + ' / ' + pageCount()" class="pager-count"></Label>
+                  @if (pageCount() <= 8) {
+                    <StackLayout orientation="horizontal" horizontalAlignment="center" class="mt-1">
+                      @for (n of pageDots(); track n) {
+                        <GridLayout class="pager-dot" [class.pager-dot-on]="n === pageIndex()"></GridLayout>
+                      }
+                    </StackLayout>
+                  }
+                </StackLayout>
+                <Label col="2" text="›" class="pager-btn" [class.pager-btn-off]="pageIndex() >= pageCount() - 1" (tap)="nextPage()"></Label>
+              </GridLayout>
+            }
+          </StackLayout>
+        </StackLayout>
+
+        <StackLayout row="3" class="tool-card tool-card-bottom">
+          <GridLayout rows="auto" columns="auto, *, auto">
+            <Label col="0" text="Size" class="text-gray-600" verticalAlignment="center"></Label>
+            <Slider col="1" minValue="8" maxValue="80" [value]="sizePct()" (valueChange)="onSize($any($event).value)" class="mx-2"></Slider>
+            <Label col="2" [text]="sizePct() + '%'" class="text-gray-600 w-12 text-right" verticalAlignment="center"></Label>
+          </GridLayout>
+          @if (f.kind === 'pdf') {
+            <GridLayout rows="auto" columns="*, auto" class="mt-1">
+              <Label col="0" text="Add date under signature" class="text-gray-600" verticalAlignment="center"></Label>
+              <Switch col="1" [checked]="addCaption()" (checkedChange)="addCaption.set($any($event).value)"></Switch>
+            </GridLayout>
+            @if (pageCount() > 1) {
+              <GridLayout rows="auto" columns="*, auto">
+                <Label col="0" text="Sign every page (same spot)" class="text-gray-600" verticalAlignment="center"></Label>
+                <Switch col="1" [checked]="allPages()" (checkedChange)="allPages.set($any($event).value)"></Switch>
+              </GridLayout>
+            }
+          }
+          <Button text="Apply signature & save" class="btn-primary mt-3" [isEnabled]="!busy()" (tap)="save()"></Button>
+        </StackLayout>
+      </GridLayout>
+    } @else {
+      <!-- ============ Word (.docx): sign on the page, just like a PDF ============ -->
+      <GridLayout rows="auto, auto, *, auto">
+        <GridLayout rows="auto" row="0" columns="*, auto" class="px-4 pt-3">
+          <Label col="0" [text]="f.name" class="text-gray-700 font-bold text-base" textWrap="false" verticalAlignment="center"></Label>
+          <Label col="1" text="Preview" class="pill-button pill-button-soft" verticalAlignment="center" (tap)="previewOriginal()"></Label>
+        </GridLayout>
+        <Label row="1" textWrap="true" class="text-gray-500 text-sm px-4 pb-2"
+          [text]="placeholderMode() ? 'Your signature will replace ' + placeholder + ' in the document.' : 'Drag the signature into place, or tap where it should go.'"></Label>
+
+        <StackLayout row="2">
+          <StackLayout class="px-4">
+            <AbsoluteLayout [width]="viewW()" [height]="viewH()" horizontalAlignment="center"
+              class="bg-white" androidElevation="4" clipToBounds="true" (tap)="onPageTap($any($event))">
+              @if (docx(); as d) {
+                <StackLayout [left]="d.layout.marginLeft * k()" [top]="d.layout.marginTop * k()" [width]="contentW()" isUserInteractionEnabled="false">
+                  @for (i of pageBlockIds(); track i) {
+                    <StackLayout [paddingBottom]="6 * k()">
+                      <ng-container *ngTemplateOutlet="docBlock; context: { $implicit: d.blocks[i] }"></ng-container>
+                    </StackLayout>
+                  }
+                </StackLayout>
+              }
+              @if (measuring()) {
+                <ActivityIndicator busy="true" width="40" height="40" [left]="viewW() / 2 - 20" [top]="viewH() / 2 - 20"></ActivityIndicator>
+              }
+              @if (sig(); as s) {
+                @if (!placeholderMode()) {
+                  <Image [src]="s.image" [left]="sigLeft()" [top]="sigTop()" [width]="sigW()" [height]="sigH()"
+                    stretch="fill" class="sig-overlay" (pan)="onPan($any($event))" (tap)="onSigTap()"></Image>
+                }
+              }
+            </AbsoluteLayout>
+
+            @if (pageCount() > 1) {
+              <!-- pill pager: round chevrons, page counter, dots -->
+              <GridLayout rows="auto" columns="auto, *, auto" class="pager" horizontalAlignment="center">
+                <Label col="0" text="‹" class="pager-btn" [class.pager-btn-off]="pageIndex() === 0" (tap)="prevPage()"></Label>
+                <StackLayout col="1" verticalAlignment="center" class="pager-mid">
+                  <Label [text]="'Page ' + (pageIndex() + 1) + ' / ' + pageCount()" class="pager-count"></Label>
+                  @if (pageCount() <= 8) {
+                    <StackLayout orientation="horizontal" horizontalAlignment="center" class="mt-1">
+                      @for (n of pageDots(); track n) {
+                        <GridLayout class="pager-dot" [class.pager-dot-on]="n === pageIndex()"></GridLayout>
+                      }
+                    </StackLayout>
+                  }
+                </StackLayout>
+                <Label col="2" text="›" class="pager-btn" [class.pager-btn-off]="pageIndex() >= pageCount() - 1" (tap)="nextPage()"></Label>
+              </GridLayout>
+            }
+          </StackLayout>
+        </StackLayout>
+
+        <StackLayout row="3" class="tool-card tool-card-bottom">
+          @if (!placeholderMode()) {
+            <GridLayout rows="auto" columns="auto, *, auto">
+              <Label col="0" text="Size" class="text-gray-600" verticalAlignment="center"></Label>
+              <Slider col="1" minValue="8" maxValue="80" [value]="sizePct()" (valueChange)="onSize($any($event).value)" class="mx-2"></Slider>
+              <Label col="2" [text]="sizePct() + '%'" class="text-gray-600 w-12 text-right" verticalAlignment="center"></Label>
+            </GridLayout>
+          } @else {
+            <GridLayout rows="auto" columns="auto, *, auto">
+              <Label col="0" text="Width" class="text-gray-600" verticalAlignment="center"></Label>
+              <Slider col="1" minValue="2" maxValue="12" [value]="docxWidthCm()" (valueChange)="onDocxWidth($any($event).value)" class="mx-2"></Slider>
+              <Label col="2" [text]="docxWidthCm() + ' cm'" class="text-gray-600 w-14 text-right" verticalAlignment="center"></Label>
+            </GridLayout>
+            <GridLayout rows="auto" columns="*, auto" class="mt-1">
+              <Label col="0" text="Add date under signature" class="text-gray-600" verticalAlignment="center"></Label>
+              <Switch col="1" [checked]="addCaption()" (checkedChange)="addCaption.set($any($event).value)"></Switch>
+            </GridLayout>
+          }
+          @if (hasPlaceholder()) {
+            <GridLayout rows="auto" columns="*, auto" class="mt-1">
+              <Label col="0" [text]="'Use the ' + placeholder + ' spot'" class="text-gray-600" verticalAlignment="center"></Label>
+              <Switch col="1" [checked]="usePlaceholder()" (checkedChange)="usePlaceholder.set($any($event).value)"></Switch>
+            </GridLayout>
+          }
+          <Button text="Apply signature & save" class="btn-primary mt-3" [isEnabled]="!busy() && !measuring()" (tap)="save()"></Button>
+        </StackLayout>
+      </GridLayout>
+
+      <!-- off-screen measuring pass: lays out every block at page scale to paginate -->
+      @if (measuring()) {
+        @if (docx(); as d) {
+          <StackLayout #measureRoot [width]="contentW()" horizontalAlignment="left" verticalAlignment="top" opacity="0" isUserInteractionEnabled="false" translateX="-5000">
+            @for (b of d.blocks; track $index) {
+              <StackLayout #mb [paddingBottom]="6 * k()">
+                <ng-container *ngTemplateOutlet="docBlock; context: { $implicit: b }"></ng-container>
+              </StackLayout>
+            }
+          </StackLayout>
+        }
+      }
+    }
+
+    <!-- one Word block rendered at page scale (shared by the page view and the measuring pass) -->
+    <ng-template #docBlock let-b>
+      @switch (b.type) {
+        @case ('p') {
+          <Label textWrap="true" [textAlignment]="b.align" [marginLeft]="b.bullet ? 8 * k() : 0">
+            <FormattedString>
+              @if (b.bullet) {
+                <Span text="•  " color="#6b7280" [fontSize]="11 * k()"></Span>
+              }
+              @for (r of b.runs; track $index) {
+                <Span [text]="r.text" [fontSize]="runSize(b, r)"
+                  [fontWeight]="r.bold || b.heading ? 'bold' : 'normal'"
+                  [fontStyle]="r.italic ? 'italic' : 'normal'"
+                  [textDecoration]="r.underline ? 'underline' : 'none'"
+                  [color]="r.color || (b.heading ? '#1f2a5a' : '#1f2937')"></Span>
+              }
+            </FormattedString>
+          </Label>
+        }
+        @case ('img') {
+          <Image [src]="b.src" [width]="imgW(b)" stretch="aspectFit" [horizontalAlignment]="b.align"></Image>
+        }
+        @case ('table') {
+          <StackLayout borderWidth="0.5" borderColor="#d1d5db">
+            @for (row of b.rows; track $index) {
+              <GridLayout rows="auto" [columns]="cols(row)" borderBottomWidth="0.5" borderColor="#e5e7eb">
+                @for (cell of row; track $index; let c = $index) {
+                  <Label [col]="c" [text]="cell" textWrap="true" [fontSize]="10 * k()" color="#1f2937" [padding]="3 * k()"></Label>
+                }
+              </GridLayout>
+            }
+          </StackLayout>
+        }
+      }
+    </ng-template>
+  } @else {
+    <Label text="No file selected." class="text-center text-gray-500" verticalAlignment="center"></Label>
+  }
+
+  <ActivityIndicator [busy]="busy()" width="56" height="56" verticalAlignment="center"></ActivityIndicator>
+</GridLayout>

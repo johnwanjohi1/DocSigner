@@ -1,3 +1,1290 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* =====================================================================
+   DocSigner theme — indigo/violet brand, soft cards, rounded pills
+   ===================================================================== */
+
+Page {
+  background-color: #f5f6fb;
+}
+
+.page-bg {
+  background-color: #f5f6fb;
+}
+
+/* ---------- Action bar ---------- */
+ActionBar,
+.action-bar {
+  background-color: #4f46e5;
+  color: #ffffff;
+}
+.action-title {
+  color: #ffffff;
+  font-size: 20;
+  font-weight: bold;
+}
+.menu-button {
+  color: #ffffff;
+  font-size: 22;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #ffffff;
+  border-radius: 16;
+  font-weight: bold;
+  font-size: 16;
+  height: 52;
+  margin: 0 4;
+  text-transform: none;
+  box-shadow: 0 6 14 rgba(79, 70, 229, 0.35);
+}
+.btn-primary[isEnabled='false'] {
+  opacity: 0.45;
+}
+.btn-soft,
+.btn-secondary {
+  background-color: #eef2ff;
+  color: #3730a3;
+  border-radius: 16;
+  font-weight: bold;
+  height: 52;
+  margin: 0 4;
+  text-transform: none;
+}
+.btn-link {
+  background-color: transparent;
+  color: #4f46e5;
+  font-weight: bold;
+  text-transform: none;
+}
+.pill-button {
+  background-color: #ffffff;
+  color: #4f46e5;
+  font-weight: bold;
+  font-size: 14;
+  border-radius: 20;
+  padding: 8 16;
+}
+.pill-button-soft {
+  background-color: #eef2ff;
+}
+
+/* ---------- Home: hero ---------- */
+.hero {
+  background: linear-gradient(160deg, #4f46e5, #7c3aed);
+  border-radius: 0 0 32 32;
+  padding: 8 20 24 20;
+}
+.hero-greeting {
+  color: #c7d2fe;
+  font-size: 15;
+}
+.hero-title {
+  color: #ffffff;
+  font-size: 26;
+  font-weight: bold;
+  margin-top: 2;
+  margin-bottom: 18;
+}
+.sig-card {
+  background-color: rgba(255, 255, 255, 0.96);
+  border-radius: 22;
+  padding: 14 16;
+  box-shadow: 0 10 24 rgba(30, 27, 75, 0.25);
+}
+.sig-card-caption {
+  color: #6366f1;
+  font-size: 11;
+  font-weight: bold;
+  letter-spacing: 0.1;
+}
+.sig-card-empty {
+  color: #111827;
+  font-size: 17;
+  font-weight: bold;
+}
+.sig-card-hint {
+  color: #6b7280;
+  font-size: 13;
+}
+.sig-card .pill-button {
+  background-color: #eef2ff;
+}
+
+/* ---------- Home: quick actions ---------- */
+.actions {
+  margin: 16 10 0 10;
+}
+.action-card {
+  background-color: #ffffff;
+  border-radius: 22;
+  margin: 6;
+  padding: 16;
+  box-shadow: 0 4 14 rgba(17, 24, 39, 0.07);
+}
+.action-icon {
+  width: 46;
+  height: 46;
+  border-radius: 14;
+  horizontal-align: left;
+}
+.action-icon-text {
+  font-size: 12;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+}
+.action-title-text {
+  color: #111827;
+  font-size: 16;
+  font-weight: bold;
+  margin-top: 12;
+}
+.action-sub {
+  color: #9ca3af;
+  font-size: 12;
+  margin-top: 2;
+}
+
+/* ---------- Home: signed files ---------- */
+.section-header {
+  margin: 22 16 12 16;
+}
+.section-title {
+  color: #111827;
+  font-size: 20;
+  font-weight: bold;
+}
+.section-sub {
+  color: #9ca3af;
+  font-size: 13;
+}
+.toggle {
+  background-color: #e8eaf6;
+  border-radius: 14;
+  padding: 3;
+  vertical-align: center;
+}
+.toggle-option {
+  color: #6b7280;
+  font-size: 13;
+  font-weight: bold;
+  padding: 7 12;
+  border-radius: 11;
+}
+.toggle-active {
+  background-color: #ffffff;
+  color: #4f46e5;
+  box-shadow: 0 2 6 rgba(79, 70, 229, 0.2);
+}
+
+.grid {
+  margin: 0 16 24 16;
+}
+.tile {
+  background-color: #ffffff;
+  border-radius: 20;
+  box-shadow: 0 4 14 rgba(17, 24, 39, 0.08);
+}
+.tile-thumb {
+  background-color: #eef0f7;
+  border-radius: 20 20 0 0;
+}
+.tile-img {
+  border-radius: 20 20 0 0;
+  margin: 6;
+}
+.kind-chip {
+  color: #ffffff;
+  font-size: 10;
+  font-weight: bold;
+  border-radius: 8;
+  padding: 3 8;
+  margin: 10;
+}
+.kind-chip-sm {
+  margin: 0;
+  padding: 2 6;
+  font-size: 9;
+}
+.tile-info {
+  padding: 10 12 12 12;
+}
+.tile-actions {
+  margin: 8;
+}
+.icon-btn-float {
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2 6 rgba(17, 24, 39, 0.18);
+}
+.tile-name {
+  color: #111827;
+  font-size: 14;
+  font-weight: bold;
+}
+.tile-date {
+  color: #9ca3af;
+  font-size: 11;
+  margin-top: 2;
+}
+.icon-btn {
+  color: #4f46e5;
+  font-size: 17;
+  font-weight: bold;
+  width: 34;
+  height: 34;
+  border-radius: 17;
+  text-align: center;
+  vertical-align: middle;
+  background-color: #eef2ff;
+  margin-left: 4;
+}
+.icon-btn-danger {
+  color: #dc2626;
+  background-color: #fef2f2;
+  font-size: 14;
+}
+
+.list {
+  margin: 0 16 24 16;
+}
+.row-card {
+  background-color: #ffffff;
+  border-radius: 18;
+  padding: 10;
+  margin-bottom: 10;
+  box-shadow: 0 3 10 rgba(17, 24, 39, 0.06);
+}
+.row-thumb {
+  background-color: #eef0f7;
+  border-radius: 10;
+}
+.row-name {
+  color: #111827;
+  font-size: 15;
+  font-weight: bold;
+}
+.row-date {
+  color: #9ca3af;
+  font-size: 12;
+}
+
+.empty {
+  margin: 24 32 40 32;
+  horizontal-align: center;
+}
+.empty-art {
+  opacity: 0.9;
+  margin-bottom: 14;
+}
+.empty-title {
+  color: #374151;
+  font-size: 17;
+  font-weight: bold;
+  text-align: center;
+}
+.empty-sub {
+  color: #9ca3af;
+  font-size: 14;
+  text-align: center;
+  margin-top: 4;
+}
+
+/* ---------- Side drawer ---------- */
+.drawer {
+  background-color: #ffffff;
+}
+.drawer-header {
+  background: linear-gradient(150deg, #4f46e5, #7c3aed);
+  padding: 52 20 20 20;
+  border-radius: 0 0 28 0;
+}
+.drawer-logo {
+  width: 52;
+  height: 52;
+  border-radius: 16;
+  background-color: rgba(255, 255, 255, 0.18);
+}
+.drawer-title {
+  color: #ffffff;
+  font-size: 22;
+  font-weight: bold;
+}
+.drawer-subtitle {
+  color: #c7d2fe;
+  font-size: 13;
+}
+.drawer-sig {
+  background-color: #ffffff;
+  border-radius: 14;
+  padding: 6 12;
+  margin-top: 18;
+}
+.drawer-sig-caption {
+  color: #c7d2fe;
+  font-size: 11;
+  margin-top: 6;
+  margin-left: 4;
+}
+.drawer-list {
+  padding: 12 10;
+}
+.drawer-section {
+  color: #9ca3af;
+  font-size: 11;
+  font-weight: bold;
+  margin: 18 14 6 14;
+}
+.drawer-item {
+  padding: 10 12;
+  border-radius: 16;
+  margin: 2 0;
+}
+.drawer-item-active {
+  background-color: #eef2ff;
+}
+.drawer-item-label {
+  color: #111827;
+  font-size: 15;
+  font-weight: bold;
+}
+.drawer-item-sub {
+  color: #9ca3af;
+  font-size: 12;
+}
+.drawer-badge {
+  width: 42;
+  height: 42;
+  border-radius: 14;
+  color: #ffffff;
+  font-size: 15;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+}
+.drawer-badge-sm {
+  width: 36;
+  height: 36;
+  border-radius: 12;
+  font-size: 10;
+}
+/* Keep the last drawer row clear of Android's navigation bar (the app draws edge-to-edge). */
+.drawer-footer {
+  margin: 0 10 48 10;
+  border-top-width: 1;
+  border-top-color: #f3f4f6;
+}
+
+/* ---------- Bottom-sheet dialogs (Invoice Maker style) ---------- */
+.sheet-scrim {
+  background-color: rgba(8, 12, 28, 0.5);
+}
+.sheet {
+  background-color: #ffffff;
+  border-top-left-radius: 22;
+  border-top-right-radius: 22;
+  padding: 8 16 20 16;
+}
+.sheet-grip {
+  width: 40;
+  height: 4;
+  border-radius: 2;
+  background-color: #e5e7eb;
+  margin-bottom: 10;
+}
+.confirm {
+  padding: 6 6 4 6;
+}
+.confirm-ring {
+  width: 80;
+  height: 80;
+  border-radius: 40;
+  margin-top: 6;
+}
+.confirm-badge {
+  width: 64;
+  height: 64;
+  border-radius: 32;
+}
+.confirm-icon {
+  font-size: 28;
+  color: #ffffff;
+}
+.confirm-title {
+  font-size: 19;
+  font-weight: bold;
+  color: #111827;
+  text-align: center;
+  margin-top: 14;
+}
+.confirm-msg {
+  font-size: 14;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 6;
+  line-height: 3;
+}
+.confirm-actions {
+  margin-top: 20;
+}
+.sheet-btn {
+  color: #ffffff;
+  border-radius: 14;
+  padding: 14;
+  font-weight: bold;
+  font-size: 15;
+  text-align: center;
+}
+.sheet-btn-alt {
+  background-image: none;
+}
+
+/* ---------- Animated splash ---------- */
+.splash {
+  background: linear-gradient(160deg, #4338ca, #6d28d9);
+}
+.splash-blob {
+  border-radius: 160;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.splash-blob-sm {
+  border-radius: 60;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.splash-card {
+  /* artwork carries its own soft edges; a CSS shadow would outline the image bounds */
+}
+.splash-title {
+  color: #ffffff;
+  font-size: 40;
+  font-weight: bold;
+  text-align: center;
+}
+.splash-sig-clip {
+  margin-top: 2;
+}
+.splash-tagline {
+  color: #ddd6fe;
+  font-size: 16;
+  text-align: center;
+  margin: 10 40 0 40;
+}
+.splash-dot {
+  width: 9;
+  height: 9;
+  border-radius: 5;
+  background-color: #ffffff;
+  margin: 0 4;
+}
+.splash-dot-mid {
+  opacity: 0.6;
+}
+.splash-dot-faint {
+  opacity: 0.3;
+}
+
+/* ---------- Signature screen ---------- */
+.screen-title {
+  color: #111827;
+  font-size: 22;
+  font-weight: bold;
+}
+.screen-sub {
+  color: #6b7280;
+  font-size: 14;
+  margin-top: 2;
+}
+.pad-shell {
+  margin: 0 16;
+  border-radius: 24;
+  box-shadow: 0 6 18 rgba(17, 24, 39, 0.08);
+}
+.pad {
+  background-color: #ffffff;
+  border-radius: 24;
+  border-width: 1;
+  border-color: #e5e7eb;
+}
+.pad-placeholder {
+  color: #d1d5db;
+  font-size: 30;
+  text-align: center;
+}
+.pad-baseline-row {
+  margin: 0 22 46 22;
+}
+.pad-x {
+  color: #9ca3af;
+  font-size: 18;
+  margin-right: 8;
+}
+.pad-baseline {
+  background-color: #d1d5db;
+}
+.tool-card {
+  background-color: #ffffff;
+  border-radius: 22;
+  margin: 14 16 0 16;
+  padding: 14 16;
+  box-shadow: 0 4 14 rgba(17, 24, 39, 0.06);
+}
+.tool-card-bottom {
+  margin: 0;
+  border-radius: 26 26 0 0;
+  padding: 18 18 22 18;
+  box-shadow: 0 -6 18 rgba(17, 24, 39, 0.08);
+}
+.tool-caption {
+  color: #9ca3af;
+  font-size: 11;
+  font-weight: bold;
+}
+.tool-value {
+  color: #4f46e5;
+  font-size: 13;
+  font-weight: bold;
+}
+.swatch-ring {
+  width: 32;
+  height: 32;
+  border-radius: 16;
+  border-width: 2;
+  border-color: transparent;
+  horizontal-align: center;
+  vertical-align: center;
+}
+.swatch {
+  width: 24;
+  height: 24;
+  border-radius: 12;
+  horizontal-align: center;
+  vertical-align: center;
+}
+.swatch-check {
+  color: #ffffff;
+  font-size: 12;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+}
+.thickness-slider {
+  margin: 0 6;
+}
+.bottom-bar {
+  padding: 14 12 18 12;
+}
+
+/* ---------- Sign screen ---------- */
+.sig-overlay {
+  border-width: 1.5;
+  border-color: #6366f1;
+  border-radius: 6;
+  background-color: rgba(99, 102, 241, 0.08);
+}
+
+/* ---------- Preview ---------- */
+.preview-bg {
+  background-color: #e9ebf3;
+}
+.preview-chip {
+  background-color: #ffffff;
+  padding: 10 16;
+  box-shadow: 0 2 8 rgba(17, 24, 39, 0.06);
+}
+.chip-badge {
+  color: #ffffff;
+  font-size: 10;
+  font-weight: bold;
+  border-radius: 7;
+  padding: 3 8;
+  vertical-align: middle;
+}
+.chip-name {
+  color: #374151;
+  font-size: 13;
+  margin-left: 10;
+  vertical-align: middle;
+}
+.page-wrap {
+  padding: 8 12;
+}
+.page-sheet {
+  background-color: #ffffff;
+  border-radius: 6;
+  box-shadow: 0 4 12 rgba(17, 24, 39, 0.12);
+}
+.page-number {
+  color: #ffffff;
+  background-color: rgba(17, 24, 39, 0.6);
+  font-size: 11;
+  border-radius: 10;
+  padding: 3 9;
+  margin: 10;
+}
+.photo-stage {
+  background-color: #0b0b14;
+}
+.photo-hint {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 14;
+  padding: 6 12;
+  margin-bottom: 24;
+}
+.docx-page {
+  background-color: #ffffff;
+  margin: 14 16 28 16;
+  padding: 28 22;
+  border-radius: 6;
+  box-shadow: 0 4 14 rgba(17, 24, 39, 0.12);
+}
+.docx-p {
+  margin-bottom: 8;
+  line-height: 3;
+}
+.docx-heading {
+  margin-top: 8;
+}
+.docx-bullet {
+  margin-left: 8;
+}
+.docx-table {
+  border-width: 1;
+  border-color: #e5e7eb;
+  border-radius: 6;
+  margin: 6 0 12 0;
+}
+.docx-tr {
+  border-bottom-width: 1;
+  border-bottom-color: #e5e7eb;
+}
+.docx-tr-head {
+  background-color: #f3f4f6;
+}
+.docx-td {
+  color: #1f2937;
+  font-size: 12;
+  padding: 6 8;
+}
+
+/* ---------- Home: plan banner + scan card ---------- */
+.plan-banner {
+  background-color: #fff7e6;
+  border-radius: 18;
+  margin: 16 16 0 16;
+  padding: 12 14;
+  border-width: 1;
+  border-color: #fde7b0;
+}
+.plan-banner-pro {
+  background-color: #eef2ff;
+  border-color: #dfe3ff;
+}
+.plan-banner-icon {
+  font-size: 20;
+  margin-right: 10;
+  vertical-align: middle;
+}
+.plan-banner-text {
+  color: #7c4a03;
+  font-size: 13;
+  font-weight: bold;
+}
+.plan-banner-pro .plan-banner-text {
+  color: #3730a3;
+  vertical-align: middle;
+}
+.plan-meter {
+  height: 6;
+  border-radius: 3;
+  background-color: #fde7b0;
+  margin-top: 8;
+  margin-right: 12;
+}
+.plan-meter-fill {
+  height: 6;
+  border-radius: 3;
+  background-color: #f59e0b;
+}
+.plan-go {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  font-size: 13;
+  font-weight: bold;
+  border-radius: 14;
+  padding: 8 12;
+}
+.scan-card {
+  background: linear-gradient(135deg, #0ea5e9, #4f46e5);
+  border-radius: 22;
+  margin: 14 16 0 16;
+  padding: 16;
+  box-shadow: 0 8 18 rgba(14, 165, 233, 0.3);
+}
+.scan-icon {
+  width: 52;
+  height: 52;
+  border-radius: 16;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.scan-icon-text {
+  font-size: 24;
+  text-align: center;
+  vertical-align: middle;
+}
+.scan-title {
+  color: #ffffff;
+  font-size: 18;
+  font-weight: bold;
+}
+.scan-sub {
+  color: #e0f2fe;
+  font-size: 13;
+}
+.scan-chevron {
+  color: #ffffff;
+  font-size: 30;
+}
+
+/* ---------- Drawer: Pro card ---------- */
+.drawer-pro {
+  background: linear-gradient(135deg, #fff7e6, #fde68a);
+  border-radius: 16;
+  padding: 10 12;
+}
+.drawer-pro-icon {
+  font-size: 24;
+  vertical-align: middle;
+}
+.drawer-pro-title {
+  color: #7c4a03;
+  font-size: 15;
+  font-weight: bold;
+}
+.drawer-pro-sub {
+  color: #92400e;
+  font-size: 11;
+}
+.drawer-pro-go {
+  background-color: #d97706;
+  color: #ffffff;
+  font-size: 11;
+  font-weight: bold;
+  border-radius: 10;
+  padding: 5 10;
+}
+.drawer-mini {
+  color: #6b7280;
+  font-size: 13;
+  font-weight: bold;
+  text-align: center;
+  padding: 10;
+}
+
+/* ---------- Paywall ---------- */
+.paywall-bar {
+  background-color: #4338ca;
+}
+.pw-hero {
+  background: linear-gradient(160deg, #4338ca, #6d28d9);
+  border-radius: 0 0 32 32;
+  padding: 8 28 30 28;
+}
+.pw-badge {
+  margin-bottom: 10;
+}
+.pw-title {
+  color: #ffffff;
+  font-size: 28;
+  font-weight: bold;
+  text-align: center;
+}
+.pw-sub {
+  color: #ddd6fe;
+  font-size: 15;
+  text-align: center;
+  margin-top: 6;
+}
+.pw-card {
+  background-color: #ffffff;
+  border-radius: 22;
+  margin: 16 16 0 16;
+  padding: 6 14;
+  box-shadow: 0 4 14 rgba(17, 24, 39, 0.07);
+}
+.pw-active {
+  padding: 20;
+  margin-top: -18;
+}
+.pw-active-icon {
+  font-size: 34;
+  text-align: center;
+}
+.pw-active-title {
+  color: #111827;
+  font-size: 20;
+  font-weight: bold;
+  text-align: center;
+}
+.pw-active-sub {
+  color: #6b7280;
+  font-size: 14;
+  text-align: center;
+}
+.pw-row {
+  padding: 12 0;
+  border-bottom-width: 1;
+  border-bottom-color: #f1f2f6;
+}
+.pw-row-last {
+  border-bottom-width: 0;
+}
+.pw-row-head {
+  padding: 10 0 8 0;
+}
+.pw-head {
+  color: #9ca3af;
+  font-size: 11;
+  font-weight: bold;
+  vertical-align: middle;
+}
+.pw-center {
+  text-align: center;
+}
+.pw-pro-chip {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-radius: 10;
+  margin: 0 6;
+  padding: 4 0;
+}
+.pw-pro-chip-text {
+  color: #ffffff;
+  font-size: 11;
+  font-weight: bold;
+  text-align: center;
+}
+.pw-feature {
+  color: #1f2937;
+  font-size: 14;
+}
+.pw-mark {
+  font-size: 17;
+  font-weight: bold;
+  vertical-align: middle;
+}
+.pw-yes {
+  color: #1f9d55;
+}
+.pw-no {
+  color: #d1d5db;
+}
+.pw-yes-pro {
+  color: #d97706;
+}
+.pw-val {
+  color: #6b7280;
+  font-size: 12;
+  vertical-align: middle;
+}
+.pw-val-pro {
+  color: #b45309;
+  font-weight: bold;
+}
+.pw-section {
+  color: #111827;
+  font-size: 18;
+  font-weight: bold;
+  margin: 22 20 6 20;
+}
+.plan {
+  background-color: #ffffff;
+  border-radius: 18;
+  border-width: 2;
+  border-color: #e5e7eb;
+  margin: 6 16;
+  padding: 14;
+}
+.plan-on {
+  border-color: #4f46e5;
+  background-color: #f5f7ff;
+}
+.plan-radio {
+  width: 22;
+  height: 22;
+  border-radius: 11;
+  border-width: 2;
+  border-color: #c7cbd6;
+}
+.plan-radio-on {
+  border-color: #4f46e5;
+}
+.plan-dot {
+  width: 10;
+  height: 10;
+  border-radius: 5;
+  background-color: #4f46e5;
+  horizontal-align: center;
+  vertical-align: center;
+}
+.plan-title {
+  color: #111827;
+  font-size: 16;
+  font-weight: bold;
+}
+.plan-sub {
+  color: #6b7280;
+  font-size: 12;
+}
+.plan-badge {
+  background-color: #d97706;
+  color: #ffffff;
+  font-size: 9;
+  font-weight: bold;
+  border-radius: 8;
+  padding: 2 7;
+  margin-bottom: 4;
+}
+.plan-price {
+  color: #111827;
+  font-size: 15;
+  font-weight: bold;
+}
+.pw-cta {
+  margin: 18 16 4 16;
+}
+.pw-link {
+  color: #4f46e5;
+  font-size: 14;
+  font-weight: bold;
+  text-align: center;
+  padding: 12;
+}
+.pw-legal {
+  color: #9ca3af;
+  font-size: 11;
+  text-align: center;
+  margin: 0 28 28 28;
+}
+.pw-error {
+  color: #e5484d;
+  margin-bottom: 6;
+}
+.pw-dev {
+  color: #ffffff;
+  background-color: #111827;
+  font-size: 12;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 12;
+  padding: 10;
+  margin: 0 40 30 40;
+}
+
+/* ---------- Intro / onboarding ---------- */
+.intro {
+  background: linear-gradient(160deg, #4338ca, #6d28d9);
+}
+.intro-top {
+  padding: 16 20 0 20;
+}
+.intro-brand {
+  color: #ffffff;
+  font-size: 18;
+  font-weight: bold;
+  margin-left: 10;
+  vertical-align: middle;
+}
+.intro-skip {
+  color: #ddd6fe;
+  font-size: 15;
+  font-weight: bold;
+  padding: 8 4;
+  vertical-align: middle;
+}
+.intro-page {
+  padding: 0 28;
+}
+.intro-disc {
+  border-radius: 125;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.intro-copy {
+  margin-bottom: 8;
+}
+.intro-title {
+  color: #ffffff;
+  font-size: 30;
+  font-weight: bold;
+  text-align: center;
+  line-height: 2;
+}
+.intro-body {
+  color: #ddd6fe;
+  font-size: 15;
+  text-align: center;
+  margin-top: 12;
+  line-height: 4;
+}
+.intro-plan {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-radius: 14;
+  padding: 10;
+  margin: 0 4;
+}
+.intro-plan-pro {
+  background-color: #ffffff;
+}
+.intro-plan-name {
+  color: #ffffff;
+  font-size: 12;
+  font-weight: bold;
+}
+.intro-plan-name-pro {
+  color: #b45309;
+}
+.intro-plan-line {
+  color: #e0e7ff;
+  font-size: 11;
+  margin-top: 2;
+}
+.intro-plan-line-pro {
+  color: #374151;
+}
+.intro-bottom {
+  padding: 8 24 36 24;
+}
+.intro-dot {
+  width: 8;
+  height: 8;
+  border-radius: 4;
+  background-color: rgba(255, 255, 255, 0.35);
+  margin: 0 4;
+}
+.intro-dot-on {
+  width: 26;
+  background-color: #ffffff;
+}
+.intro-btn {
+  background-color: #ffffff;
+  color: #4338ca;
+  font-size: 16;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 16;
+  padding: 16;
+}
+.intro-btn-ghost {
+  color: #ffffff;
+  font-size: 15;
+  font-weight: bold;
+  text-align: center;
+  padding: 14;
+}
+
+
+/* ---------- Page pager (sign screen) ---------- */
+.pager {
+  margin-top: 12;
+  background-color: #ffffff;
+  border-radius: 28;
+  padding: 6;
+  width: 260;
+  height: 58;
+  box-shadow: 0 4 12 rgba(17, 24, 39, 0.08);
+}
+.pager-btn {
+  width: 44;
+  height: 44;
+  border-radius: 22;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #ffffff;
+  font-size: 26;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  padding-bottom: 4;
+}
+.pager-btn-off {
+  background: none;
+  background-color: #eef0f7;
+  color: #c3c7d4;
+}
+.pager-mid {
+  margin: 0 8;
+}
+.pager-count {
+  color: #1f2937;
+  font-size: 14;
+  font-weight: bold;
+  text-align: center;
+}
+.pager-dot {
+  width: 6;
+  height: 6;
+  border-radius: 3;
+  background-color: #d6d9e6;
+  margin: 0 2;
+}
+.pager-dot-on {
+  width: 16;
+  background-color: #4f46e5;
+}
+
+/* ---------- Help & how-to (Invoice Maker style) ---------- */
+.help-hero {
+  background: linear-gradient(160deg, #4f46e5, #7c3aed);
+  border-radius: 0 0 32 32;
+  padding: 10 20 26 20;
+}
+.help-hero-l {
+  color: #c7d2fe;
+  font-size: 15;
+}
+.help-hero-t {
+  color: #ffffff;
+  font-size: 22;
+  font-weight: bold;
+  margin-top: 4;
+}
+.help-search {
+  margin: 16 16 6 16;
+}
+.help-search-in {
+  background-color: #ffffff;
+  border-radius: 16;
+  border-width: 1;
+  border-color: #e5e7eb;
+  padding: 12 14 12 48;
+  font-size: 15;
+  color: #111827;
+  placeholder-color: #9ca3af;
+}
+.help-search-icon {
+  font-size: 17;
+  margin-left: 16;
+  opacity: 0.6;
+}
+.help-quick {
+  margin: 4 10 2 10;
+}
+.help-q {
+  background-color: #ffffff;
+  border-radius: 20;
+  margin: 6;
+  padding: 14;
+  box-shadow: 0 4 14 rgba(17, 24, 39, 0.06);
+}
+.help-q-i {
+  font-size: 24;
+  margin-bottom: 6;
+}
+.help-q-title {
+  color: #111827;
+  font-size: 15;
+  font-weight: bold;
+}
+.help-q-sub {
+  color: #6b7280;
+  font-size: 12;
+  margin-top: 2;
+}
+.help-sec {
+  background-color: #ffffff;
+  border-radius: 20;
+  margin: 6 16;
+  padding: 12 14;
+  box-shadow: 0 3 10 rgba(17, 24, 39, 0.05);
+}
+.help-badge {
+  width: 44;
+  height: 44;
+  border-radius: 14;
+}
+.help-badge-sm {
+  width: 34;
+  height: 34;
+  border-radius: 11;
+}
+.help-gloss {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0));
+  border-radius: 14;
+  height: 55%;
+  vertical-align: top;
+}
+.help-badge-i {
+  font-size: 20;
+}
+.help-badge-i-sm {
+  font-size: 15;
+}
+.help-sec-text {
+  margin-left: 12;
+}
+.help-sec-title {
+  color: #111827;
+  font-size: 16;
+  font-weight: bold;
+}
+.help-sec-sub {
+  color: #6b7280;
+  font-size: 12.5;
+  margin-top: 1;
+}
+.help-plus {
+  font-size: 24;
+  font-weight: bold;
+  padding: 0 4 0 10;
+}
+.help-items {
+  margin-top: 8;
+}
+.help-item-row {
+  border-top-width: 1;
+  border-color: #f1f2f6;
+  padding: 12 2;
+}
+.help-qt {
+  color: #111827;
+  font-size: 15;
+  font-weight: bold;
+}
+.help-chev {
+  color: #9ca3af;
+  font-size: 18;
+  padding-left: 10;
+}
+.help-a {
+  color: #4b5563;
+  font-size: 14;
+  margin-top: 8;
+  line-height: 4;
+}
+.help-pro {
+  background-color: #fff4db;
+  color: #b06a00;
+  font-size: 10;
+  font-weight: bold;
+  padding: 3 9;
+  border-radius: 10;
+  margin-left: 8;
+}
+.help-count {
+  color: #6b7280;
+  font-size: 13;
+  font-weight: bold;
+  margin: 10 20 4 20;
+}
+.help-result .help-a {
+  margin-top: 10;
+}
+.help-foot {
+  color: #9ca3af;
+  font-size: 12;
+  text-align: center;
+  margin: 16 24 28 24;
+}

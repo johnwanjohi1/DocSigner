@@ -1,7 +1,8 @@
 import { NativeScriptConfig } from '@nativescript/core';
 
 export default {
-  id: 'com.docsigner.app',
+  // Permanent once published on Google Play / App Store.
+  id: 'com.docsigner.signpdf.esignature',
   appPath: 'src',
   appResourcesPath: 'App_Resources',
   android: {

@@ -1,0 +1,153 @@
+<ActionBar title="" flat="true" class="action-bar">
+  @if (isIOS) {
+    <ActionItem text="☰" ios.position="left" class="menu-button" (tap)="openMenu()"></ActionItem>
+  } @else {
+    <!-- Android: white hamburger icon in the top-left navigation slot -->
+    <NavigationButton icon="res://ic_menu" (tap)="openMenu()"></NavigationButton>
+  }
+  <Label text="DocSigner" class="action-title"></Label>
+</ActionBar>
+
+<ScrollView class="page-bg">
+  <StackLayout>
+    <!-- ============ Hero ============ -->
+    <StackLayout class="hero">
+      <Label [text]="greeting()" class="hero-greeting"></Label>
+      <Label text="What would you like to sign today?" class="hero-title" textWrap="true"></Label>
+
+      <GridLayout rows="auto" columns="*, auto" class="sig-card" (tap)="editSignature()">
+        @if (signatures.signature(); as s) {
+          <StackLayout col="0">
+            <Label text="YOUR SIGNATURE" class="sig-card-caption"></Label>
+            <Image [src]="s.image" height="58" stretch="aspectFit" horizontalAlignment="left" class="mt-1"></Image>
+          </StackLayout>
+          <Label col="1" text="Redraw" class="pill-button" verticalAlignment="center"></Label>
+        } @else {
+          <StackLayout col="0">
+            <Label text="No signature yet" class="sig-card-empty"></Label>
+            <Label text="Draw it once, use it everywhere." class="sig-card-hint" textWrap="true"></Label>
+          </StackLayout>
+          <Label col="1" text="Create" class="pill-button" verticalAlignment="center"></Label>
+        }
+      </GridLayout>
+    </StackLayout>
+
+    <!-- ============ Plan banner ============ -->
+    @if (pro.isPro()) {
+      <GridLayout rows="auto" columns="auto, *" class="plan-banner plan-banner-pro" (tap)="pro.openPaywall()">
+        <Label col="0" text="👑" class="plan-banner-icon"></Label>
+        <Label col="1" text="DocSigner Pro · unlimited signing, Word & no watermark" class="plan-banner-text" textWrap="true"></Label>
+      </GridLayout>
+    } @else {
+      <GridLayout columns="*, auto" rows="auto, auto" class="plan-banner" (tap)="pro.openPaywall()">
+        <Label row="0" col="0" [text]="pro.freeLeft() + ' of ' + freeLimit + ' free signings left this month'" class="plan-banner-text"></Label>
+        <GridLayout row="1" col="0" class="plan-meter">
+          <GridLayout class="plan-meter-fill" horizontalAlignment="left" [width]="(pro.freeLeft() / freeLimit) * 100 + '%'"></GridLayout>
+        </GridLayout>
+        <Label row="0" col="1" rowSpan="2" text="Go Pro 👑" class="plan-go" verticalAlignment="center"></Label>
+      </GridLayout>
+    }
+
+    <!-- ============ Scan (featured) ============ -->
+    <GridLayout rows="auto" columns="auto, *, auto" class="scan-card" (tap)="actions.scan()">
+      <GridLayout col="0" class="scan-icon"><Label text="📷" class="scan-icon-text"></Label></GridLayout>
+      <StackLayout col="1" class="ml-4" verticalAlignment="center">
+        <Label text="Scan a document" class="scan-title"></Label>
+        <Label text="Turn paper into a PDF, then sign it" class="scan-sub" textWrap="true"></Label>
+      </StackLayout>
+      <Label col="2" text="›" class="scan-chevron" verticalAlignment="center"></Label>
+    </GridLayout>
+
+    <!-- ============ Quick actions ============ -->
+    <GridLayout rows="auto, auto" columns="*, *" class="actions">
+      <GridLayout row="0" col="0" rows="auto, auto, auto" class="action-card" (tap)="actions.pickFile(['pdf'])">
+        <GridLayout row="0" class="action-icon" backgroundColor="#fee2e2"><Label text="PDF" class="action-icon-text" color="#dc2626"></Label></GridLayout>
+        <Label row="1" text="Sign a PDF" class="action-title-text"></Label>
+        <Label row="2" text="Contracts, forms" class="action-sub"></Label>
+      </GridLayout>
+      <GridLayout row="0" col="1" rows="auto, auto, auto" class="action-card" (tap)="actions.pickFile(['docx'])">
+        <GridLayout row="0" class="action-icon" backgroundColor="#dbeafe"><Label text="DOC" class="action-icon-text" color="#2563eb"></Label></GridLayout>
+        <Label row="1" text="Sign a Word doc" class="action-title-text"></Label>
+        <Label row="2" [text]="pro.isPro() ? '.docx letters' : pro.docxLeft() > 0 ? pro.docxLeft() + ' free left' : 'Locked · Pro 👑'" class="action-sub"></Label>
+      </GridLayout>
+      <GridLayout row="1" col="0" rows="auto, auto, auto" class="action-card" (tap)="actions.pickPhoto()">
+        <GridLayout row="0" class="action-icon" backgroundColor="#d1fae5"><Label text="IMG" class="action-icon-text" color="#059669"></Label></GridLayout>
+        <Label row="1" text="Sign a picture" class="action-title-text"></Label>
+        <Label row="2" text="From your gallery" class="action-sub"></Label>
+      </GridLayout>
+      <GridLayout row="1" col="1" rows="auto, auto, auto" class="action-card" (tap)="actions.takePhoto()">
+        <GridLayout row="0" class="action-icon" backgroundColor="#fef3c7"><Label text="CAM" class="action-icon-text" color="#d97706"></Label></GridLayout>
+        <Label row="1" text="Take a photo" class="action-title-text"></Label>
+        <Label row="2" text="Snap & sign" class="action-sub"></Label>
+      </GridLayout>
+    </GridLayout>
+
+    <!-- ============ Signed files header + layout toggle ============ -->
+    <GridLayout rows="auto" columns="*, auto" class="section-header">
+      <StackLayout col="0" verticalAlignment="center">
+        <Label text="Signed files" class="section-title"></Label>
+        <Label [text]="signedFiles().length + (signedFiles().length === 1 ? ' file' : ' files')" class="section-sub"></Label>
+      </StackLayout>
+      <GridLayout rows="auto" col="1" columns="auto, auto" class="toggle">
+        <Label col="0" text="▦  Grid" class="toggle-option" [class.toggle-active]="layout() === 'grid'" (tap)="setLayout('grid')"></Label>
+        <Label col="1" text="☰  List" class="toggle-option" [class.toggle-active]="layout() === 'list'" (tap)="setLayout('list')"></Label>
+      </GridLayout>
+    </GridLayout>
+
+    @if (signedFiles().length === 0) {
+      <StackLayout class="empty">
+        <Image src="~/assets/splash/doc-pdf.png" width="96" height="122" class="empty-art"></Image>
+        <Label text="Nothing signed yet" class="empty-title"></Label>
+        <Label text="Pick a document or picture above. Signed copies will appear here." class="empty-sub" textWrap="true"></Label>
+      </StackLayout>
+    } @else if (layout() === 'grid') {
+      <!-- ============ Grid ============ -->
+      <StackLayout class="grid">
+        @for (row of gridRows(); track $index) {
+          <GridLayout rows="auto" columns="*, 12, *" class="mb-3">
+            @for (item of row; track item.path; let i = $index) {
+              <GridLayout [col]="i * 2" rows="auto, auto" class="tile" (tap)="open(item)">
+                <GridLayout row="0" [height]="tileW * 1.15" class="tile-thumb">
+                  @if (thumb(item); as t) {
+                    <Image [src]="t" [stretch]="item.kind === 'image' ? 'aspectFill' : 'aspectFit'" class="tile-img"></Image>
+                  }
+                  <Label [text]="kindLabel(item.kind)" class="kind-chip" [backgroundColor]="kindColor(item.kind)" horizontalAlignment="left" verticalAlignment="top"></Label>
+                  <StackLayout orientation="horizontal" horizontalAlignment="right" verticalAlignment="bottom" class="tile-actions">
+                    <Label text="↗" class="icon-btn icon-btn-float" (tap)="share(item)"></Label>
+                    <Label text="✕" class="icon-btn icon-btn-float icon-btn-danger" (tap)="remove(item)"></Label>
+                  </StackLayout>
+                </GridLayout>
+                <StackLayout row="1" class="tile-info">
+                  <Label [text]="displayName(item.name)" class="tile-name" textWrap="false"></Label>
+                  <Label [text]="friendlyDate(item.modified)" class="tile-date"></Label>
+                </StackLayout>
+              </GridLayout>
+            }
+          </GridLayout>
+        }
+      </StackLayout>
+    } @else {
+      <!-- ============ List ============ -->
+      <StackLayout class="list">
+        @for (item of signedFiles(); track item.path) {
+          <GridLayout rows="auto" columns="auto, *, auto, auto" class="row-card" (tap)="open(item)">
+            <GridLayout col="0" width="52" height="64" class="row-thumb">
+              @if (thumb(item); as t) {
+                <Image [src]="t" [stretch]="item.kind === 'image' ? 'aspectFill' : 'aspectFit'"></Image>
+              }
+            </GridLayout>
+            <StackLayout col="1" class="ml-3" verticalAlignment="center">
+              <Label [text]="displayName(item.name)" class="row-name" textWrap="false"></Label>
+              <GridLayout rows="auto" columns="auto, *" class="mt-1">
+                <Label col="0" [text]="kindLabel(item.kind)" class="kind-chip kind-chip-sm" [backgroundColor]="kindColor(item.kind)"></Label>
+                <Label col="1" [text]="friendlyDate(item.modified)" class="row-date ml-2" verticalAlignment="center"></Label>
+              </GridLayout>
+            </StackLayout>
+            <Label col="2" text="↗" class="icon-btn" verticalAlignment="center" (tap)="share(item)"></Label>
+            <Label col="3" text="✕" class="icon-btn icon-btn-danger" verticalAlignment="center" (tap)="remove(item)"></Label>
+          </GridLayout>
+        }
+      </StackLayout>
+    }
+  </StackLayout>
+</ScrollView>

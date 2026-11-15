@@ -1,6 +1,10 @@
 // You can add your native dependencies here
 dependencies {
 //  implementation 'androidx.multidex:multidex:2.0.1'
+  // Google Play Billing (DocSigner Pro: subscriptions + lifetime unlock)
+  implementation 'com.android.billingclient:billing:8.0.0'
+  // Google ML Kit document scanner (scan paper into a PDF)
+  implementation 'com.google.android.gms:play-services-mlkit-document-scanner:16.0.0'
 }
 
 android {

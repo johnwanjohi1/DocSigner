@@ -1,0 +1,90 @@
+<ActionBar title="Help & how-to" class="action-bar">
+  <NavigationButton text="Back" icon="res://ic_arrow_back" (tap)="goBack()"></NavigationButton>
+</ActionBar>
+
+<ScrollView class="page-bg">
+  <StackLayout>
+    <!-- hero -->
+    <StackLayout class="help-hero">
+      <Label text="How can we help?" class="help-hero-l"></Label>
+      <Label text="Everything DocSigner does, and how to use it" class="help-hero-t" textWrap="true"></Label>
+    </StackLayout>
+
+    <!-- search -->
+    <GridLayout rows="auto" class="help-search">
+      <TextField hint="Search help, e.g. Word, scan, Pro" [text]="query()" (textChange)="onQuery($any($event).value)"
+        returnKeyType="search" class="help-search-in"></TextField>
+      <Label text="🔍" class="help-search-icon" verticalAlignment="center" isUserInteractionEnabled="false"></Label>
+    </GridLayout>
+
+    @if (!searching()) {
+      <!-- quick actions -->
+      <GridLayout rows="auto" columns="*, *" class="help-quick">
+        <StackLayout col="0" class="help-q" (tap)="replayIntro()">
+          <Label text="🧭" class="help-q-i"></Label>
+          <Label text="Replay the intro" class="help-q-title"></Label>
+          <Label text="A quick look at what DocSigner does" class="help-q-sub" textWrap="true"></Label>
+        </StackLayout>
+        <StackLayout col="1" class="help-q" (tap)="contactSupport()">
+          <Label text="✉️" class="help-q-i"></Label>
+          <Label text="Contact support" class="help-q-title"></Label>
+          <Label [text]="supportEmail" class="help-q-sub" textWrap="true"></Label>
+        </StackLayout>
+      </GridLayout>
+
+      <!-- sections -->
+      @for (s of sections; track s.id) {
+        <StackLayout class="help-sec">
+          <GridLayout rows="auto" columns="auto, *, auto" (tap)="toggleSection(s.id)">
+            <GridLayout col="0" class="help-badge" [backgroundImage]="grad(s.color)">
+              <GridLayout class="help-gloss"></GridLayout>
+              <Label [text]="s.icon" class="help-badge-i" horizontalAlignment="center" verticalAlignment="center"></Label>
+            </GridLayout>
+            <StackLayout col="1" class="help-sec-text" verticalAlignment="center">
+              <Label [text]="s.title" class="help-sec-title"></Label>
+              <Label [text]="s.summary" class="help-sec-sub" textWrap="true"></Label>
+            </StackLayout>
+            <Label col="2" [text]="isOpen(s.id) ? '−' : '+'" class="help-plus" verticalAlignment="center" [color]="s.color"></Label>
+          </GridLayout>
+          @if (isOpen(s.id)) {
+            <StackLayout class="help-items">
+              @for (it of s.items; track it.q; let i = $index) {
+                <StackLayout class="help-item-row" (tap)="toggleItem(s.id + '/' + i)">
+                  <GridLayout rows="auto" columns="*, auto, auto">
+                    <Label col="0" [text]="it.q" class="help-qt" textWrap="true" verticalAlignment="center"></Label>
+                    @if (it.pro) {
+                      <Label col="1" text="PRO" class="help-pro" verticalAlignment="center"></Label>
+                    }
+                    <Label col="2" [text]="isItemOpen(s.id + '/' + i) ? '⌃' : '⌄'" class="help-chev" verticalAlignment="center"></Label>
+                  </GridLayout>
+                  @if (isItemOpen(s.id + '/' + i)) {
+                    <Label [text]="it.a" class="help-a" textWrap="true"></Label>
+                  }
+                </StackLayout>
+              }
+            </StackLayout>
+          }
+        </StackLayout>
+      }
+    } @else {
+      <!-- search results -->
+      <Label [text]="results().length ? results().length + (results().length === 1 ? ' answer' : ' answers') : 'No answers found. Try another word.'" class="help-count"></Label>
+      @for (r of results(); track r.key) {
+        <StackLayout class="help-sec help-result">
+          <GridLayout rows="auto" columns="auto, *, auto">
+            <GridLayout col="0" class="help-badge help-badge-sm" [backgroundImage]="grad(r.section.color)">
+              <Label [text]="r.section.icon" class="help-badge-i help-badge-i-sm" horizontalAlignment="center" verticalAlignment="center"></Label>
+            </GridLayout>
+            <Label col="1" [text]="r.item.q" class="help-qt help-sec-text" textWrap="true" verticalAlignment="center"></Label>
+            @if (r.item.pro) {
+              <Label col="2" text="PRO" class="help-pro" verticalAlignment="center"></Label>
+            }
+          </GridLayout>
+          <Label [text]="r.item.a" class="help-a" textWrap="true"></Label>
+        </StackLayout>
+      }
+    }
+
+    <Label text="DocSigner · your documents stay on your phone" class="help-foot" textWrap="true"></Label>
+  </StackLayout>
+</ScrollView>

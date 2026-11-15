@@ -1,0 +1,86 @@
+<ActionBar title="" flat="true" class="action-bar paywall-bar">
+  <NavigationButton text="Back" icon="res://ic_arrow_back" (tap)="goBack()"></NavigationButton>
+</ActionBar>
+
+<ScrollView class="page-bg">
+  <StackLayout>
+    <!-- ============ Hero ============ -->
+    <StackLayout class="pw-hero">
+      <Image src="~/assets/splash/pro-badge.png" width="96" height="96" class="pw-badge"></Image>
+      <Label text="DocSigner Pro" class="pw-title"></Label>
+      <Label text="Sign without limits — PDFs, Word documents and photos, with no watermark." class="pw-sub" textWrap="true"></Label>
+    </StackLayout>
+
+    @if (pro.isPro()) {
+      <!-- ============ Already Pro ============ -->
+      <StackLayout class="pw-card pw-active">
+        <Label text="👑" class="pw-active-icon"></Label>
+        <Label text="You're Pro" class="pw-active-title"></Label>
+        <Label [text]="planName() + ' · all features unlocked'" class="pw-active-sub" textWrap="true"></Label>
+        @if (pro.proPlan() === 'monthly' || pro.proPlan() === 'yearly') {
+          <Label text="Manage subscription" class="pw-link" (tap)="manage()"></Label>
+        }
+      </StackLayout>
+    }
+
+    <!-- ============ Free vs Pro ============ -->
+    <StackLayout class="pw-card">
+      <GridLayout rows="auto" columns="*, 64, 76" class="pw-row pw-row-head">
+        <Label col="0" text="FEATURES" class="pw-head"></Label>
+        <Label col="1" text="FREE" class="pw-head pw-center"></Label>
+        <GridLayout col="2" class="pw-pro-chip"><Label text="PRO" class="pw-pro-chip-text"></Label></GridLayout>
+      </GridLayout>
+      @for (f of features; track f.title; let last = $last) {
+        <GridLayout rows="auto" columns="*, 64, 76" class="pw-row" [class.pw-row-last]="last">
+          <Label col="0" [text]="f.title" class="pw-feature" textWrap="true" verticalAlignment="center"></Label>
+          @if (isBool(f.free)) {
+            <Label col="1" [text]="f.free ? '✓' : '—'" class="pw-mark pw-center" [class.pw-yes]="f.free" [class.pw-no]="!f.free"></Label>
+          } @else {
+            <Label col="1" [text]="f.free" class="pw-val pw-center" textWrap="true"></Label>
+          }
+          @if (isBool(f.pro)) {
+            <Label col="2" [text]="f.pro ? '✓' : '—'" class="pw-mark pw-center pw-yes-pro"></Label>
+          } @else {
+            <Label col="2" [text]="f.pro" class="pw-val pw-val-pro pw-center" textWrap="true"></Label>
+          }
+        </GridLayout>
+      }
+    </StackLayout>
+
+    @if (!pro.isPro()) {
+      <!-- ============ Plans ============ -->
+      <Label text="Choose your plan" class="pw-section"></Label>
+      @for (p of plans(); track p.key) {
+        <GridLayout rows="auto" columns="auto, *, auto" class="plan" [class.plan-on]="selected() === p.key" (tap)="selected.set(p.key)">
+          <GridLayout col="0" class="plan-radio" [class.plan-radio-on]="selected() === p.key" verticalAlignment="center">
+            @if (selected() === p.key) {
+              <GridLayout class="plan-dot"></GridLayout>
+            }
+          </GridLayout>
+          <StackLayout col="1" class="ml-3" verticalAlignment="center">
+            <Label [text]="p.title" class="plan-title"></Label>
+            <Label [text]="p.sub" class="plan-sub" textWrap="true"></Label>
+          </StackLayout>
+          <StackLayout col="2" verticalAlignment="center">
+            @if (p.badge) {
+              <Label [text]="p.badge" class="plan-badge" horizontalAlignment="right"></Label>
+            }
+            <Label [text]="p.price" class="plan-price" horizontalAlignment="right"></Label>
+          </StackLayout>
+        </GridLayout>
+      }
+
+      <Button [text]="cta()" class="btn-primary pw-cta" [isEnabled]="!pro.busy()" (tap)="buy()"></Button>
+      <Label text="Restore purchases" class="pw-link" (tap)="pro.restore()"></Label>
+      @if (pro.storeError()) {
+        <Label [text]="'Store: ' + pro.storeError()" class="pw-legal pw-error" textWrap="true"></Label>
+      }
+      <Label text="Subscriptions renew automatically until cancelled. Cancel anytime in Google Play › Subscriptions. Lifetime is a one-time payment."
+        class="pw-legal" textWrap="true"></Label>
+    }
+
+    @if (dev) {
+      <Label [text]="'DEV ONLY · Toggle Pro (now ' + (pro.isPro() ? 'ON' : 'OFF') + ')'" class="pw-dev" (tap)="pro.devToggle()"></Label>
+    }
+  </StackLayout>
+</ScrollView>
