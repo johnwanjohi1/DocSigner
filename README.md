@@ -39,7 +39,8 @@ src/app/
   native/imaging.ts    signature rendering, photo compositing, watermark, PDF page rendering
   native/billing.ts    Google Play Billing 8 wrapper
   services/            signing (PDF/DOCX/image), preview, Pro/limits, dialogs, drawer, prefs
-tools/generate_assets.py   app icons, splash, illustrations, Play Store graphics
+tools/generate_assets.py   app icons, splash, illustrations
+tools/make_store_assets.py Play Store icon, feature graphic and screenshots
 store/                     Play Store icon + feature graphic
 ```
 

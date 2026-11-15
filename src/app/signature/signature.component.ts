@@ -57,6 +57,8 @@ export class SignatureComponent implements AfterViewInit {
   readonly colorName = computed(() => this.colors.find((c) => c.value === this.color())?.name || '');
   readonly thickness = signal(3);
   readonly hasInk = signal(false);
+  /** True when the screen opened with the user's saved signature already on the pad. */
+  readonly editingSaved = signal(false);
   /** Swatch cell size so 10 fit per row inside the tool card (screen - margins - padding). */
   readonly swatchCell = Math.floor((Screen.mainScreen.widthDIPs - 32 - 32) / 10);
   readonly minThickness = 1;
@@ -71,7 +73,23 @@ export class SignatureComponent implements AfterViewInit {
   private sliderReady = false;
 
   ngAfterViewInit() {
+    this.loadSaved();
     setTimeout(() => (this.sliderReady = true), 300);
+  }
+
+  /** If a signature is already saved, put it back on the pad (with its ink colour and thickness) to edit. */
+  private loadSaved() {
+    const saved = this.signatures.signature();
+    if (!saved) return;
+    const drawing = this.signatures.drawing();
+    if (drawing) {
+      if (this.colors.some((c) => c.value === drawing.color)) this.color.set(drawing.color);
+      if (drawing.thickness >= this.minThickness && drawing.thickness <= this.maxThickness) this.thickness.set(drawing.thickness);
+      this.pad.load(drawing.strokes, drawing.width, drawing.height);
+    } else {
+      this.pad.showPicture(saved.image);
+    }
+    this.editingSaved.set(true);
   }
 
   /** Slider drag: live-updates the stroke width (0.5 DIP steps). */
@@ -84,14 +102,20 @@ export class SignatureComponent implements AfterViewInit {
   }
 
   save() {
+    // Old picture-only signature, nothing new drawn: keep it as it is.
+    if (this.pad.showingPicture) return this.continue();
     const result = this.pad.export();
     if (!result) return;
     try {
-      this.signatures.save(result.image, result.aspect);
+      this.signatures.save(result.image, result.aspect, { ...this.pad.drawing(), color: this.color(), thickness: this.thickness() });
     } catch (e) {
       this.dialogs.error(e, 'Could not save signature');
       return;
     }
+    this.continue();
+  }
+
+  private continue() {
     const next = this.route.snapshot.queryParamMap.get('next');
     if (next) {
       this.router.navigate([next], { clearHistory: false, replaceUrl: true } as any);

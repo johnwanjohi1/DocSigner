@@ -19,6 +19,18 @@ export interface DialogOptions {
   destructive?: boolean;
   /** Stacked action buttons (choose()); the first one is the filled primary. */
   actions?: DialogAction[];
+  /** Option rows (menu()): the Invoice Maker-style "⋮" options sheet. */
+  options?: MenuOption[];
+}
+
+/** One row of an options sheet: glossy icon tile, label, optional line below; danger = red label (Delete). */
+export interface MenuOption {
+  value: string;
+  label: string;
+  sub?: string;
+  icon: string;
+  color: string;
+  danger?: boolean;
 }
 
 export interface DialogAction {
@@ -110,6 +122,11 @@ export class DialogService {
     return this.open({ tone: 'info', ...opts, cancelText: undefined });
   }
 
+  /** Options sheet (title, then one row per option); resolves the chosen value, or null when dismissed. */
+  menu(opts: { title: string; message?: string; options: MenuOption[] }): Promise<string | null> {
+    return this.open({ tone: 'info', ...opts, actions: undefined, cancelText: undefined });
+  }
+
   error(e: any, title = 'Something went wrong'): Promise<void> {
     console.error(e);
     return this.alert({ title, message: String(e?.message || e), tone: 'danger', okText: 'Got it' });
@@ -120,17 +137,25 @@ export class DialogService {
     const d = this.current();
     if (!d) return;
     this.current.set(null);
+    // A sheet opened in reaction to this one (e.g. Delete → "Delete this file?") must wait until the closed sheet
+    // has left the screen; otherwise the overlay is reused mid-exit and the new sheet stays invisible.
+    this.settling = true;
     d.resolve(value);
-    const next = this.queue.shift();
-    if (next) setTimeout(() => this.current.set(next), 60);
+    setTimeout(() => {
+      this.settling = false;
+      const next = this.queue.shift();
+      if (next) this.current.set(next);
+    }, 60);
   }
+
+  private settling = false;
 
   private open(opts: DialogOptions): Promise<string | null> {
     return new Promise<string | null>((resolve) => {
       const t = TONES[opts.tone || 'info'];
       const color = opts.color || (opts.destructive ? '#e5484d' : t.color);
       const d: ActiveDialog = { okText: 'OK', ...opts, icon: opts.icon || t.icon, color, id: ++this.seq, resolve };
-      if (this.current()) this.queue.push(d);
+      if (this.current() || this.settling) this.queue.push(d);
       else this.current.set(d);
     });
   }

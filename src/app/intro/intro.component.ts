@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, ViewChild, computed, inject, signal } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
-import { ApplicationSettings, CoreTypes, Page, Screen, SwipeGestureEventData, View } from '@nativescript/core';
+import { Application, ApplicationSettings, CoreTypes, Page, Screen, SwipeGestureEventData, View } from '@nativescript/core';
 import { FREE_DOCX_LIMIT, FREE_MONTHLY_LIMIT } from '../services/pro.service';
+import { splashVisible } from '../services/splash-state';
 
 export const INTRO_SEEN_KEY = 'intro.seen.v1';
 
@@ -13,8 +14,13 @@ interface IntroPage {
 
 const EASE = CoreTypes.AnimationCurve.cubicBezier(0.16, 1, 0.3, 1);
 const POP = CoreTypes.AnimationCurve.cubicBezier(0.34, 1.45, 0.64, 1);
+/** How long each page stays before the intro moves on by itself. */
+const AUTO_ADVANCE_MS = 5000;
+const TICK_MS = 50;
+/** Width of the active dot (see .intro-dot-on in app.css); its white fill grows across it as a countdown. */
+export const ACTIVE_DOT_WIDTH = 26;
 
-/** First-launch onboarding: four swipeable pages, dots, Skip / Next / Get started. */
+/** First-launch onboarding: four swipeable pages that also advance on their own, dots, Skip / Next / Get started. */
 @Component({
   selector: 'app-intro',
   standalone: false,
@@ -24,6 +30,7 @@ const POP = CoreTypes.AnimationCurve.cubicBezier(0.34, 1.45, 0.64, 1);
 export class IntroComponent implements AfterViewInit {
   private readonly router = inject(RouterExtensions);
   private readonly page = inject(Page);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly W = Screen.mainScreen.widthDIPs;
   readonly freeLimit = FREE_MONTHLY_LIMIT;
@@ -54,12 +61,27 @@ export class IntroComponent implements AfterViewInit {
   readonly current = computed(() => this.pages[this.index()]);
   private animating = false;
 
+  /** 0..1: how far the current page is through its auto-advance time; drawn as the fill of the active dot. */
+  readonly progress = signal(0);
+  readonly dotFill = computed(() => ACTIVE_DOT_WIDTH * (this.index() < this.pages.length - 1 ? this.progress() : 1));
+  private elapsed = 0;
+
   @ViewChild('stage', { read: ElementRef }) stage: ElementRef<View>;
   @ViewChild('art', { read: ElementRef }) art: ElementRef<View>;
   @ViewChild('copy', { read: ElementRef }) copy: ElementRef<View>;
 
   constructor() {
     this.page.actionBarHidden = true;
+    // Auto-advance. The clock only runs while the page is really visible: not under the first-launch splash,
+    // not while the app is in the background, not mid-transition. It stops on the last page, which needs a choice.
+    const timer = setInterval(() => {
+      if (splashVisible() || Application.inBackground || this.animating) return;
+      if (this.index() >= this.pages.length - 1) return;
+      this.elapsed += TICK_MS;
+      this.progress.set(Math.min(1, this.elapsed / AUTO_ADVANCE_MS));
+      if (this.elapsed >= AUTO_ADVANCE_MS) this.go(this.index() + 1);
+    }, TICK_MS);
+    this.destroyRef.onDestroy(() => clearInterval(timer));
   }
 
   ngAfterViewInit() {
@@ -79,6 +101,9 @@ export class IntroComponent implements AfterViewInit {
   async go(i: number) {
     if (i < 0 || i >= this.pages.length || i === this.index() || this.animating) return;
     this.animating = true;
+    // Any page change (automatic, swipe, Next or a dot) gives the new page its full time.
+    this.elapsed = 0;
+    this.progress.set(0);
     const dir = i > this.index() ? 1 : -1;
     const stage = this.stage?.nativeElement;
     try {

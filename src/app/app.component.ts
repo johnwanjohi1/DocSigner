@@ -11,6 +11,7 @@ import { DrawerService } from './services/drawer.service';
 import { ProService } from './services/pro.service';
 import { INTRO_SEEN_KEY } from './intro/intro.component';
 import { SignatureService } from './services/signature.service';
+import { splashVisible } from './services/splash-state';
 
 interface MenuItem {
   title: string;
@@ -282,6 +283,7 @@ export class AppComponent implements AfterViewInit {
       }
     }
     this.showSplash.set(false);
+    splashVisible.set(false);
   }
 
   // ------------------------------------------------------------ dialog animation

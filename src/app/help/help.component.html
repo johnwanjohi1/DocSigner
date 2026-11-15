@@ -59,6 +59,9 @@
                   </GridLayout>
                   @if (isItemOpen(s.id + '/' + i)) {
                     <Label [text]="it.a" class="help-a" textWrap="true"></Label>
+                    @if (it.email) {
+                      <Label [text]="'✉️  ' + supportEmail" class="help-mail" (tap)="emailSupport()"></Label>
+                    }
                   }
                 </StackLayout>
               }
@@ -81,6 +84,9 @@
             }
           </GridLayout>
           <Label [text]="r.item.a" class="help-a" textWrap="true"></Label>
+          @if (r.item.email) {
+            <Label [text]="'✉️  ' + supportEmail" class="help-mail" (tap)="emailSupport()"></Label>
+          }
         </StackLayout>
       }
     }

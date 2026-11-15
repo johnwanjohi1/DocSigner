@@ -6,7 +6,7 @@ import { DocKind, kindOf, shareFile } from '../native/files';
 import { loadPhoto } from '../native/imaging';
 import { DialogService } from '../services/dialog.service';
 import { DocActionsService } from '../services/doc-actions.service';
-import { DocBlock, DocRun, PreviewService, displayName, kindColor, kindLabel } from '../services/preview.service';
+import { DocBlock, DocRun, PreviewService, displayName, fileMenu, kindColor, kindLabel } from '../services/preview.service';
 import { SigningService } from '../services/signing.service';
 
 /** Full-screen preview of a PDF, photo or Word document. */
@@ -150,6 +150,15 @@ export class PreviewComponent implements OnInit {
     } catch (e) {
       this.dialogs.error(e);
     }
+  }
+
+  /** ⋮ in the top bar: Share, Save to… and (for signed copies) Delete, in an options sheet. */
+  async more() {
+    const options = fileMenu(false).filter((o) => o.value !== 'delete' || this.isSigned());
+    const choice = await this.dialogs.menu({ title: this.title(), options });
+    if (choice === 'share') this.share();
+    else if (choice === 'save') this.saveTo();
+    else if (choice === 'delete') this.remove();
   }
 
   saveTo() {

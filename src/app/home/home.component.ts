@@ -5,7 +5,7 @@ import { shareFile } from '../native/files';
 import { DialogService } from '../services/dialog.service';
 import { DocActionsService } from '../services/doc-actions.service';
 import { DrawerService } from '../services/drawer.service';
-import { PreviewService, displayName, friendlyDate, kindColor, kindLabel } from '../services/preview.service';
+import { PreviewService, displayName, fileMenu, friendlyDate, kindColor, kindLabel } from '../services/preview.service';
 import { SignatureService } from '../services/signature.service';
 import { SignedFile, SigningService } from '../services/signing.service';
 import { FilesLayout, UiPrefsService } from '../services/ui-prefs.service';
@@ -80,11 +80,25 @@ export class HomeComponent implements OnInit {
    */
   private buttonTapAt = 0;
 
-  open(item: SignedFile) {
+  open(item: SignedFile, fromMenu = false) {
     setTimeout(() => {
-      if (Date.now() - this.buttonTapAt < 400) return;
+      if (!fromMenu && Date.now() - this.buttonTapAt < 400) return;
       this.router.navigate(['/preview'], { queryParams: { path: item.path, name: item.name, signed: '1' } });
     }, 60);
+  }
+
+  /** ⋮ button / long-press on a signed file: options sheet like Invoice Maker's. */
+  async options(item: SignedFile) {
+    this.buttonTapAt = Date.now();
+    const choice = await this.dialogs.menu({
+      title: displayName(item.name),
+      message: `${kindLabel(item.kind)} · signed ${friendlyDate(item.modified)}`,
+      options: fileMenu(),
+    });
+    if (choice === 'open') this.open(item, true);
+    else if (choice === 'share') this.share(item);
+    else if (choice === 'save') this.actions.saveTo(item.path, item.name);
+    else if (choice === 'delete') this.remove(item);
   }
 
   share(item: SignedFile) {

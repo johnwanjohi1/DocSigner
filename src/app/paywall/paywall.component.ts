@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { RouterExtensions } from '@nativescript/angular';
 import { Utils, isAndroid } from '@nativescript/core';
 import { StoreProduct } from '../native/billing';
@@ -33,23 +33,32 @@ export class PaywallComponent implements OnInit {
   readonly selected = signal<PlanKey>('yearly');
   readonly dev = __DEV__;
 
+  /**
+   * Only the plans Google Play actually returns (created and active in Play Console, available in the user's country),
+   * with Play's localised prices. Nothing is shown for a plan Play doesn't offer.
+   */
   readonly plans = computed<PlanCard[]>(() => {
-    this.pro.products(); // re-evaluate when prices load
+    const cards: PlanCard[] = [];
     const y = this.pro.product('yearly');
     const m = this.pro.product('monthly');
     const l = this.pro.product('lifetime');
-    return [
-      {
-        key: 'yearly',
-        title: 'Yearly',
-        badge: 'BEST VALUE',
-        price: y ? `${y.price} / year` : '— / year',
-        sub: y ? [trialText(y), perMonth(y)].filter(Boolean).join(' · ') : 'Billed yearly',
-      },
-      { key: 'monthly', title: 'Monthly', price: m ? `${m.price} / month` : '— / month', sub: m ? trialText(m) || 'Cancel anytime' : 'Cancel anytime' },
-      { key: 'lifetime', title: 'Lifetime', badge: 'PAY ONCE', price: l ? l.price : '—', sub: 'One payment, Pro forever' },
-    ];
+    if (y) {
+      cards.push({ key: 'yearly', title: 'Yearly', badge: 'BEST VALUE', price: `${y.price} / year`, sub: [trialText(y), perMonth(y)].filter(Boolean).join(' · ') || 'Billed yearly' });
+    }
+    if (m) cards.push({ key: 'monthly', title: 'Monthly', price: `${m.price} / month`, sub: trialText(m) || 'Cancel anytime' });
+    if (l) cards.push({ key: 'lifetime', title: 'Lifetime', badge: 'PAY ONCE', price: l.price, sub: 'One payment, Pro forever' });
+    // "Best value" only makes sense when there is something to compare with.
+    if (cards.length === 1) delete cards[0].badge;
+    return cards;
   });
+
+  constructor() {
+    // Keep the selection on a plan that is actually offered (yearly first, when Play has it).
+    effect(() => {
+      const plans = this.plans();
+      if (plans.length && !plans.some((p) => p.key === this.selected())) this.selected.set(plans[0].key);
+    });
+  }
 
   readonly cta = computed(() => {
     const p = this.pro.product(this.selected());

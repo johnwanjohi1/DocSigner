@@ -5,6 +5,8 @@ export interface HelpItem {
   q: string;
   a: string;
   pro?: boolean;
+  /** Shows the support email under the answer as a link that opens the email app. */
+  email?: boolean;
 }
 export interface HelpSection {
   id: string;
@@ -264,7 +266,8 @@ export const HELP: HelpSection[] = [
       },
       {
         q: 'Contact support',
-        a: `Email ${SUPPORT_EMAIL} with a short description and, if you can, a screenshot.`,
+        a: 'Tap the email address below and describe the problem in a few words. A screenshot helps us fix it faster.',
+        email: true,
       },
     ],
   },

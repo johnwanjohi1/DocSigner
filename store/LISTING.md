@@ -14,6 +14,7 @@ DocSigner: PDF Signer & Scan
 ```
 
 Alternatives, all 30 characters or fewer:
+
 - `DocSigner - Sign PDF & Word`
 - `DocSigner: Sign PDF, Docs`
 
@@ -104,10 +105,10 @@ Welcome to DocSigner 1.0!
 
 ## 5. Graphics
 
-| Play Console field | File |
-|---|---|
-| App icon (512×512, 32-bit PNG) | `store/play-icon-512.png` |
-| Feature graphic (1024×500) | `store/feature-graphic-1024x500.png` |
+| Play Console field                   | File                                                              |
+| ------------------------------------ | ----------------------------------------------------------------- |
+| App icon (512×512, 32-bit PNG)      | `store/play-icon-512.png`                                       |
+| Feature graphic (1024×500)          | `store/feature-graphic-1024x500.png`                            |
 | Phone screenshots (2–8, 1080×1920) | `store/screenshots/*-1080x1920.png` (upload in file-name order) |
 
 Screenshots are regenerated from `store/raw/` with `python tools/make_store_screenshots.py`; captions live in that
@@ -125,12 +126,13 @@ script. Icons and the feature graphic come from `python tools/generate_assets.py
 
 **Subscriptions.** Each has a base plan; the benefit lines are 40 characters max each, up to 4.
 
-| Product ID | Name | Description (max 200) |
-|---|---|---|
-| `docsigner_pro_monthly` | DocSigner Pro (Monthly) | Unlimited signing, unlimited Word documents and no watermark. Billed monthly, cancel anytime. |
-| `docsigner_pro_yearly` | DocSigner Pro (Yearly) | Unlimited signing, unlimited Word documents and no watermark. Billed yearly at the best price. |
+| Product ID                | Name                    | Description (max 200)                                                                          |
+| ------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------- |
+| `docsigner_pro_monthly` | DocSigner Pro (Monthly) | Unlimited signing, unlimited Word documents and no watermark. Billed monthly, cancel anytime.  |
+| `docsigner_pro_yearly`  | DocSigner Pro (Yearly)  | Unlimited signing, unlimited Word documents and no watermark. Billed yearly at the best price. |
 
 Benefits for both subscriptions:
+
 ```
 Unlimited signing every month
 Unlimited Word (.docx) documents
@@ -140,8 +142,8 @@ Cancel anytime in Google Play
 
 **One-time product:**
 
-| Product ID | Name | Description (max 200) |
-|---|---|---|
+| Product ID                 | Name                     | Description (max 200)                                                                        |
+| -------------------------- | ------------------------ | -------------------------------------------------------------------------------------------- |
 | `docsigner_pro_lifetime` | DocSigner Pro (Lifetime) | Pay once and keep Pro forever: unlimited signing, unlimited Word documents and no watermark. |
 
 Suggested prices: Monthly KES 299 / US$2.99 · Yearly KES 1,999 / US$19.99 (optional 7-day free trial offer) ·
@@ -181,16 +183,19 @@ Add it in *Main store listing › Manage translations › Add your own translati
 Have a native speaker review it before publishing.
 
 **Jina (max 30):**
+
 ```
 DocSigner: Saini PDF na Skena
 ```
 
 **Maelezo mafupi (max 80):**
+
 ```
 Weka sahihi kwenye PDF, Word na picha. Skena karatasi kuwa PDF, shiriki haraka.
 ```
 
 **Maelezo kamili:**
+
 ```
 DocSigner ni njia rahisi na ya haraka ya kuweka sahihi kwenye nyaraka za PDF, faili za Word na picha ukitumia simu yako. Chora sahihi yako mara moja, iweke mahali sahihi, kisha shiriki nyaraka iliyosainiwa kwa sekunde chache — bila kuchapisha wala kufungua akaunti.
 

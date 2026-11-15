@@ -1,3 +1,4 @@
+import type { MenuOption } from './dialog.service';
 import { Injectable } from '@angular/core';
 import { File, ImageSource, knownFolders, path as fsPath } from '@nativescript/core';
 import JSZip from 'jszip';
@@ -263,3 +264,12 @@ export function displayName(name: string): string {
   return name.replace(/_signed_\d{8}_?\d{6}(?=\.\w+$)/, '');
 }
 
+/** The actions for a signed file, shared by the home list and the preview screen's ⋮ menu. */
+export function fileMenu(withOpen = true): MenuOption[] {
+  return [
+    ...(withOpen ? [{ value: 'open', label: 'Open', sub: 'Preview every signed page', icon: '👁', color: '#4f46e5' }] : []),
+    { value: 'share', label: 'Share', sub: 'WhatsApp, email, Drive or any app', icon: '↗', color: '#0284c7' },
+    { value: 'save', label: 'Save to…', sub: 'Downloads, any folder, SD card or Drive', icon: '📁', color: '#059669' },
+    { value: 'delete', label: 'Delete', sub: 'Remove it from DocSigner', icon: '🗑', color: '#e5484d', danger: true },
+  ];
+}

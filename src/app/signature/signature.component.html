@@ -4,9 +4,11 @@
 
 <GridLayout rows="auto, *, auto, auto" class="page-bg">
   <StackLayout row="0" class="px-5 pt-4 pb-3">
-    <Label text="Draw your signature" class="screen-title"></Label>
-    <Label text="Use your finger. It's saved on this device and reused for every document." class="screen-sub"
-      textWrap="true"></Label>
+    <Label [text]="editingSaved() ? 'Your signature' : 'Draw your signature'" class="screen-title"></Label>
+    <Label [text]="editingSaved()
+        ? 'Your saved signature is loaded. Change the ink, add to it, or tap Clear to draw a new one.'
+        : 'Use your finger. It’s saved on this device and reused for every document.'"
+      class="screen-sub" textWrap="true"></Label>
   </StackLayout>
 
   <!-- Drawing surface -->
@@ -15,7 +17,7 @@
       (changed)="hasInk.set($event)"></app-signature-pad>
   </GridLayout>
 
-  <!-- Ink controls -->3
+  <!-- Ink controls -->
   <StackLayout row="2" class="tool-card">
     <GridLayout rows="auto" columns="*, auto">
       <Label col="0" text="INK COLOUR" class="tool-caption"></Label>

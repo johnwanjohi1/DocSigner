@@ -50,27 +50,41 @@
     @if (!pro.isPro()) {
       <!-- ============ Plans ============ -->
       <Label text="Choose your plan" class="pw-section"></Label>
-      @for (p of plans(); track p.key) {
-        <GridLayout rows="auto" columns="auto, *, auto" class="plan" [class.plan-on]="selected() === p.key" (tap)="selected.set(p.key)">
-          <GridLayout col="0" class="plan-radio" [class.plan-radio-on]="selected() === p.key" verticalAlignment="center">
-            @if (selected() === p.key) {
-              <GridLayout class="plan-dot"></GridLayout>
-            }
+      @if (plans().length) {
+        @for (p of plans(); track p.key) {
+          <GridLayout rows="auto" columns="auto, *, auto" class="plan" [class.plan-on]="selected() === p.key" (tap)="selected.set(p.key)">
+            <GridLayout col="0" class="plan-radio" [class.plan-radio-on]="selected() === p.key" verticalAlignment="center">
+              @if (selected() === p.key) {
+                <GridLayout class="plan-dot"></GridLayout>
+              }
+            </GridLayout>
+            <StackLayout col="1" class="ml-3" verticalAlignment="center">
+              <Label [text]="p.title" class="plan-title"></Label>
+              <Label [text]="p.sub" class="plan-sub" textWrap="true"></Label>
+            </StackLayout>
+            <StackLayout col="2" verticalAlignment="center">
+              @if (p.badge) {
+                <Label [text]="p.badge" class="plan-badge" horizontalAlignment="right"></Label>
+              }
+              <Label [text]="p.price" class="plan-price" horizontalAlignment="right"></Label>
+            </StackLayout>
           </GridLayout>
-          <StackLayout col="1" class="ml-3" verticalAlignment="center">
-            <Label [text]="p.title" class="plan-title"></Label>
-            <Label [text]="p.sub" class="plan-sub" textWrap="true"></Label>
-          </StackLayout>
-          <StackLayout col="2" verticalAlignment="center">
-            @if (p.badge) {
-              <Label [text]="p.badge" class="plan-badge" horizontalAlignment="right"></Label>
-            }
-            <Label [text]="p.price" class="plan-price" horizontalAlignment="right"></Label>
-          </StackLayout>
-        </GridLayout>
-      }
+        }
 
-      <Button [text]="cta()" class="btn-primary pw-cta" [isEnabled]="!pro.busy()" (tap)="buy()"></Button>
+        <Button [text]="cta()" class="btn-primary pw-cta" [isEnabled]="!pro.busy()" (tap)="buy()"></Button>
+      } @else if (pro.loadingProducts()) {
+        <StackLayout class="plan-empty">
+          <ActivityIndicator busy="true" width="28" height="28" color="#4f46e5"></ActivityIndicator>
+          <Label text="Loading plans from Google Play…" class="plan-empty-text" textWrap="true"></Label>
+        </StackLayout>
+      } @else {
+        <StackLayout class="plan-empty">
+          <Label text="Plans aren't available right now" class="plan-empty-title" textWrap="true"></Label>
+          <Label text="Google Play didn't return any plans. Check your internet connection and that you're signed in to the Play Store, then try again."
+            class="plan-empty-text" textWrap="true"></Label>
+          <Label text="Try again" class="pw-link" (tap)="pro.init()"></Label>
+        </StackLayout>
+      }
       <Label text="Restore purchases" class="pw-link" (tap)="pro.restore()"></Label>
       @if (pro.storeError()) {
         <Label [text]="'Store: ' + pro.storeError()" class="pw-legal pw-error" textWrap="true"></Label>

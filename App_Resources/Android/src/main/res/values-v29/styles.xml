@@ -10,9 +10,19 @@
             but the way the app is converted may lead to visual issues 
         -->
         <item name="android:forceDarkAllowed">false</item>
+        <item name="android:isLightTheme">true</item>
     </style>
 
     <style name="AppTheme" parent="AppThemeBase29">
+    </style>
+
+    <!-- The launch theme is active until NativeScript swaps in AppTheme, so it must refuse dark mode as well. -->
+    <style name="LaunchScreenThemeBase29" parent="LaunchScreenThemeBase">
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:isLightTheme">true</item>
+    </style>
+
+    <style name="LaunchScreenTheme" parent="LaunchScreenThemeBase29">
     </style>
 
 </resources>

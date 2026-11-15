@@ -66,13 +66,26 @@ export class HelpComponent {
   }
 
   toggleItem(key: string) {
-    const s = new Set(this.openItems());
-    s.has(key) ? s.delete(key) : s.add(key);
-    this.openItems.set(s);
+    // A tap on the email link inside an open answer must not also collapse it. The row's tap can arrive before or
+    // after the link's, so decide a moment later.
+    setTimeout(() => {
+      if (Date.now() - this.mailTapAt < 400) return;
+      const s = new Set(this.openItems());
+      s.has(key) ? s.delete(key) : s.add(key);
+      this.openItems.set(s);
+    }, 40);
   }
 
   replayIntro() {
     this.router.navigate(['/intro'], { clearHistory: true } as any);
+  }
+
+  private mailTapAt = 0;
+
+  /** The tappable support address inside the "Contact support" answer. */
+  emailSupport() {
+    this.mailTapAt = Date.now();
+    Utils.openUrl(`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent('DocSigner support')}`);
   }
 
   /** Opens an email to support, and expands Troubleshooting → Contact support. */
@@ -80,6 +93,6 @@ export class HelpComponent {
     const trouble = HELP.find((s) => s.id === 'trouble')!;
     this.open.set(new Set([...this.open(), 'trouble']));
     this.openItems.set(new Set([...this.openItems(), 'trouble/' + (trouble.items.length - 1)]));
-    Utils.openUrl(`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent('DocSigner support')}`);
+    this.emailSupport();
   }
 }

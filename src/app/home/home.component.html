@@ -106,15 +106,14 @@
         @for (row of gridRows(); track $index) {
           <GridLayout rows="auto" columns="*, 12, *" class="mb-3">
             @for (item of row; track item.path; let i = $index) {
-              <GridLayout [col]="i * 2" rows="auto, auto" class="tile" (tap)="open(item)">
+              <GridLayout [col]="i * 2" rows="auto, auto" class="tile" (tap)="open(item)" (longPress)="options(item)">
                 <GridLayout row="0" [height]="tileW * 1.15" class="tile-thumb">
                   @if (thumb(item); as t) {
                     <Image [src]="t" [stretch]="item.kind === 'image' ? 'aspectFill' : 'aspectFit'" class="tile-img"></Image>
                   }
                   <Label [text]="kindLabel(item.kind)" class="kind-chip" [backgroundColor]="kindColor(item.kind)" horizontalAlignment="left" verticalAlignment="top"></Label>
                   <StackLayout orientation="horizontal" horizontalAlignment="right" verticalAlignment="bottom" class="tile-actions">
-                    <Label text="↗" class="icon-btn icon-btn-float" (tap)="share(item)"></Label>
-                    <Label text="✕" class="icon-btn icon-btn-float icon-btn-danger" (tap)="remove(item)"></Label>
+                    <Label text="⋮" class="icon-btn icon-btn-float icon-btn-more" (tap)="options(item)"></Label>
                   </StackLayout>
                 </GridLayout>
                 <StackLayout row="1" class="tile-info">
@@ -130,7 +129,7 @@
       <!-- ============ List ============ -->
       <StackLayout class="list">
         @for (item of signedFiles(); track item.path) {
-          <GridLayout rows="auto" columns="auto, *, auto, auto" class="row-card" (tap)="open(item)">
+          <GridLayout rows="auto" columns="auto, *, auto" class="row-card" (tap)="open(item)" (longPress)="options(item)">
             <GridLayout col="0" width="52" height="64" class="row-thumb">
               @if (thumb(item); as t) {
                 <Image [src]="t" [stretch]="item.kind === 'image' ? 'aspectFill' : 'aspectFit'"></Image>
@@ -143,8 +142,7 @@
                 <Label col="1" [text]="friendlyDate(item.modified)" class="row-date ml-2" verticalAlignment="center"></Label>
               </GridLayout>
             </StackLayout>
-            <Label col="2" text="↗" class="icon-btn" verticalAlignment="center" (tap)="share(item)"></Label>
-            <Label col="3" text="✕" class="icon-btn icon-btn-danger" verticalAlignment="center" (tap)="remove(item)"></Label>
+            <Label col="2" text="⋮" class="more-btn" verticalAlignment="center" (tap)="options(item)"></Label>
           </GridLayout>
         }
       </StackLayout>

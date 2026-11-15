@@ -3,22 +3,22 @@
 This guide covers everything needed to publish DocSigner, from a signed release build to the Pro in-app purchases.
 Steps marked **(once)** only happen for the first release.
 
-| Item | Value |
-|---|---|
-| Package name (application ID) | `com.docsigner.signpdf.esignature` (set in `nativescript.config.ts`; **permanent after the first upload**) |
-| Version | `versionCode` / `versionName` in `App_Resources/Android/app.gradle` |
-| Target SDK | 36 (meets Google Play's current target-API requirement) |
-| Pro products | `docsigner_pro_monthly`, `docsigner_pro_yearly` (subscriptions), `docsigner_pro_lifetime` (one-time) |
-| Store graphics | `store/play-icon-512.png`, `store/feature-graphic-1024x500.png` (regenerate with `python tools/generate_assets.py`) |
-| Store listing text (SEO) | `store/LISTING.md` (name, descriptions, release notes, products, Data safety, rating), checked by `python tools/check_listing.py` |
-| Phone screenshots | `store/screenshots/*-1080x1920.png` (rebuild with `python tools/make_store_screenshots.py` from `store/raw/`) |
-| Privacy policy page | `store/privacy-policy.html`: host it and paste the URL into Play Console |
+| Item                          | Value                                                                                                                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Package name (application ID) | `com.docsigner.signpdf.esignature` (set in `nativescript.config.ts`; **permanent after the first upload**)                                                                                    |
+| Version                       | `versionCode` / `versionName` in `App_Resources/Android/app.gradle`                                                                                                                               |
+| Target SDK                    | 36 (meets Google Play's current target-API requirement)                                                                                                                                                 |
+| Pro products                  | `docsigner_pro_monthly`, `docsigner_pro_yearly` (subscriptions), `docsigner_pro_lifetime` (one-time)                                                                                              |
+| Store graphics                | `store/play-icon-512.png`, `store/feature-graphic-1024x500.png` (regenerate with `python tools/make_store_assets.py`)                                                                             |
+| Store listing text (SEO)      | [PLAYSTORE.md](PLAYSTORE.md): step-by-step Play Console checklist with all listing text (name, descriptions, release notes, products, Data safety, rating), checked by `python tools/check_listing.py` |
+| Phone screenshots             | `store/screenshots/*-1080x1920.png` (rebuild with `python tools/make_store_assets.py` from `store/raw/`)                                                                                          |
+| Privacy policy page           | `store/privacy-policy.html`: host it and paste the URL into Play Console                                                                                                                              |
 
 ---
 
 ## 1. Accounts (once)
 
-1. Create a **Google Play Console** developer account (one-time US$25 fee): <https://play.google.com/console>.
+1. Create a **Google Play Console** developer account (one-time US$25 fee): [https://play.google.com/console](https://play.google.com/console).
    - New personal accounts must run a **closed test with at least 12 testers for 14 days** before production access is granted. Plan for this.
 2. In Play Console › *Settings › Payments profile*, set up a **merchant/payments profile**. You can't sell Pro without one.
 
@@ -59,19 +59,23 @@ Release builds are production builds, so the **"DEV ONLY · Toggle Pro" button o
 ## 5. Create the app in Play Console (once)
 
 *All apps › Create app*:
-- **App name:** `DocSigner: PDF Signer & Scan` (see `store/LISTING.md` §1). Up to 30 characters; the title is the biggest search factor.
+
+- **App name:** `DocSigner: PDF Signer & Scan` (see [PLAYSTORE.md](PLAYSTORE.md)). Up to 30 characters; the title is the biggest search factor.
 - Default language, **App** (not game), **Free** (Pro is an in-app purchase).
 
 ### Store listing (*Grow › Store presence › Main store listing*)
-Copy every text field from **`store/LISTING.md`**: short description, full description, release notes,
+
+Copy every text field from **[PLAYSTORE.md](PLAYSTORE.md)**: short description, full description, release notes,
 category, in-app product names and the optional Swahili translation. They're SEO-tuned and checked against the limits.
+
 - **App icon:** `store/play-icon-512.png`
 - **Feature graphic:** `store/feature-graphic-1024x500.png`
 - **Phone screenshots:** upload `store/screenshots/*-1080x1920.png` in file-name order.
   To add or replace one, save a raw capture (`adb exec-out screencap -p > store/raw/01-home.png`) with a name
-  listed in `tools/make_store_screenshots.py`, then rerun that script.
+  listed in `tools/make_store_assets.py`, then rerun that script.
 
 ### App content (*Policy › App content*)
+
 - **Privacy policy URL:** required (the app uses the camera and photos). Host a page, e.g. on GitHub Pages or
   Google Sites, with the template in §10.
 - **Ads:** No ads.
@@ -97,22 +101,23 @@ category, in-app product names and the optional Swahili translation. They're SEO
 
 **Subscriptions** (*Subscriptions › Create subscription*):
 
-| Product ID | Base plan | Suggested |
-|---|---|---|
-| `docsigner_pro_monthly` | auto-renewing, 1 month | e.g. KES 299 / US$2.99 |
-| `docsigner_pro_yearly` | auto-renewing, 1 year | e.g. KES 1,999 / US$19.99, plus an optional **7-day free-trial offer** |
+| Product ID                | Base plan              | Suggested                                                                    |
+| ------------------------- | ---------------------- | ---------------------------------------------------------------------------- |
+| `docsigner_pro_monthly` | auto-renewing, 1 month | e.g. KES 299 / US$2.99                                                       |
+| `docsigner_pro_yearly`  | auto-renewing, 1 year  | e.g. KES 1,999 / US$19.99, plus an optional **7-day free-trial offer** |
 
 The app picks an offer with a free trial automatically if one exists, and shows "Start 7-day free trial".
 
 **One-time product** (*In-app products › Create product*):
 
-| Product ID | Type | Suggested |
-|---|---|---|
+| Product ID                 | Type     | Suggested                 |
+| -------------------------- | -------- | ------------------------- |
 | `docsigner_pro_lifetime` | one-time | e.g. KES 4,999 / US$39.99 |
 
 **Activate** every product. The IDs must match exactly; they're set in `src/app/services/pro.service.ts`.
 
 ### Test purchases
+
 - *Settings › License testing*: add tester Gmail accounts. Their purchases use test cards and are never charged.
 - Install from the internal-testing link, open **Go Pro**, buy, and check that "Welcome to DocSigner Pro!" appears.
 - Test **Restore purchases** after reinstalling.

@@ -45,6 +45,8 @@ export class ProService {
   readonly proPlan = signal<string>(ApplicationSettings.getString('pro.plan', ''));
   readonly products = signal<StoreProduct[]>([]);
   readonly storeError = signal('');
+  /** True while the plans are being fetched from Google Play. */
+  readonly loadingProducts = signal(false);
   readonly busy = signal(false);
   readonly storeAvailable = billing.available;
 
@@ -74,13 +76,16 @@ export class ProService {
 
   /** Called at start-up: loads store prices and re-validates ownership. */
   async init() {
-    if (!billing.available) return;
+    if (!billing.available || this.loadingProducts()) return;
+    this.loadingProducts.set(true);
     try {
       this.products.set(await billing.queryProducts([PRODUCT_IDS.monthly, PRODUCT_IDS.yearly], [PRODUCT_IDS.lifetime]));
       this.apply(await billing.owned(), true);
       this.storeError.set('');
     } catch (e) {
       this.storeError.set(String((e as any)?.message || e));
+    } finally {
+      this.loadingProducts.set(false);
     }
   }
 

@@ -74,7 +74,12 @@
   <StackLayout row="2" class="intro-bottom">
     <StackLayout orientation="horizontal" horizontalAlignment="center" class="mb-6">
       @for (p of pages; track p.key; let i = $index) {
-        <GridLayout class="intro-dot" [class.intro-dot-on]="i === index()" (tap)="go(i)"></GridLayout>
+        <GridLayout class="intro-dot" [class.intro-dot-on]="i === index()" (tap)="go(i)">
+          @if (i === index()) {
+            <!-- countdown to the next page -->
+            <GridLayout class="intro-dot-fill" [width]="dotFill()" horizontalAlignment="left"></GridLayout>
+          }
+        </GridLayout>
       }
     </StackLayout>
     @if (index() < pages.length - 1) {

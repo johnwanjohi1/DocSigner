@@ -71,6 +71,29 @@
     <GridLayout class="sheet-scrim" (loaded)="onBackdropLoaded($any($event))" (tap)="onBackdropTap(d)">
       <StackLayout class="sheet" verticalAlignment="bottom" [paddingBottom]="sheetBottom()" (loaded)="onCardLoaded($any($event))" (tap)="noop()">
         <GridLayout class="sheet-grip" horizontalAlignment="center"></GridLayout>
+        @if (d.options?.length) {
+          <!-- options sheet (⋮ menus): one row per action, like Invoice Maker -->
+          <Label [text]="d.title" class="menu-title" textWrap="true"></Label>
+          @if (d.message) {
+            <Label [text]="d.message" class="menu-msg" textWrap="true"></Label>
+          }
+          @for (o of d.options; track o.value) {
+            <GridLayout rows="auto" columns="auto, *, auto" class="menu-row" (tap)="closeDialog(o.value)">
+              <GridLayout col="0" class="menu-badge" [backgroundImage]="shine(o.color)">
+                <GridLayout class="menu-gloss"></GridLayout>
+                <Label [text]="o.icon" class="menu-icon" horizontalAlignment="center" verticalAlignment="center"></Label>
+              </GridLayout>
+              <StackLayout col="1" class="menu-text" verticalAlignment="center">
+                <Label [text]="o.label" class="menu-label" [class.menu-danger]="o.danger"></Label>
+                @if (o.sub) {
+                  <Label [text]="o.sub" class="menu-sub" textWrap="true"></Label>
+                }
+              </StackLayout>
+              <Label col="2" text="›" class="menu-chev" verticalAlignment="center"></Label>
+            </GridLayout>
+          }
+          <Label text="Cancel" class="sheet-btn sheet-btn-alt menu-cancel" (tap)="closeDialog(null)"></Label>
+        } @else {
         <StackLayout class="confirm">
           <GridLayout class="confirm-ring" horizontalAlignment="center" [backgroundColor]="tint(d.color, 0.16)">
             <GridLayout class="confirm-badge" horizontalAlignment="center" verticalAlignment="center" [backgroundImage]="shine(d.color)">
@@ -100,6 +123,7 @@
             </GridLayout>
           }
         </StackLayout>
+        }
       </StackLayout>
     </GridLayout>
   }

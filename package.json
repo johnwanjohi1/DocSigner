@@ -3,6 +3,15 @@
   "main": "./src/main.ts",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "lint": "tslint \"src/**/*.ts\"",
+    "start": "ns debug android",
+    "debug": "ns debug android --debug-brk --bundle --stacktrace --scan --info --env.verbose",
+    "prod": "ns debug android --bundle --stacktrace --scan --info --env.verbose --env.production",
+    "dev": "ns debug android --bundle --stacktrace --scan --info --env.verbose --env.development",
+    "build-store": "ns build android --release --aab --key-store-path docsigner-upload.jks --key-store-password Ziggie@6818 --key-store-alias docsigner --key-store-alias-password Ziggie@6818 --copy-to playstore-release/DocSigner.aab",
+    "build-apk-share": "ns build android --gradle-args=\"-Pabis=arm64-v8a,armeabi-v7a\" --copy-to dist/DocSigner.apk"
+  },
   "dependencies": {
     "@angular/animations": "~22.0.0",
     "@angular/common": "~22.0.0",

@@ -9,6 +9,7 @@ Outputs:
              Android 12+ splash icon
   - iOS:     AppIcon.appiconset, LaunchScreen.AspectFill / LaunchScreen.Center images
   - App:     src/assets/splash/*.png illustrations used by the animated in-app splash
+Play Store graphics (icon, feature graphic, screenshots) come from tools/make_store_assets.py.
 """
 import math
 import os
@@ -347,50 +348,10 @@ def build_splash_illustrations():
     save(draw_share(220), os.path.join(APP_ASSETS, "share.png"))
 
 
-def build_store(master):
-    """Google Play listing graphics: 512x512 hi-res icon and 1024x500 feature graphic."""
-    print("Play Store graphics")
-    out = os.path.join(ROOT, "store")
-    save(master.convert("RGB").resize((512, 512), Image.LANCZOS), os.path.join(out, "play-icon-512.png"))
-    W, H = 1024, 500
-    fg = gradient((W, H), (67, 56, 202), (109, 40, 217)).convert("RGBA")
-    blobs = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    bd = ImageDraw.Draw(blobs)
-    bd.ellipse((-120, -160, 300, 260), fill=(255, 255, 255, 22))
-    bd.ellipse((820, 300, 1160, 640), fill=(255, 255, 255, 22))
-    fg.alpha_composite(blobs)
-    # illustration on the right
-    photo = draw_photo((190, 220)).rotate(12, resample=Image.BICUBIC, expand=True)
-    word = draw_document((180, 230), badge="DOC", badge_color=(37, 99, 235), signed=True, lines=4).rotate(-10, resample=Image.BICUBIC, expand=True)
-    pdf = draw_document((210, 268), badge="PDF", badge_color=(239, 68, 68), signed=True)
-    pen = draw_pen(150, angle_deg=-40)
-    for img, xy in ((photo, (560, 140)), (word, (800, 120)), (pdf, (660, 110)), (pen, (800, 300))):
-        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        layer.alpha_composite(img, xy)
-        fg.alpha_composite(shadow(layer, 10, (0, 8), 90))
-        fg.alpha_composite(layer)
-    d = ImageDraw.Draw(fg)
-    from PIL import ImageFont
-    def font(px, bold=True):
-        for name in (("segoeuib.ttf" if bold else "segoeui.ttf"), "arialbd.ttf", "arial.ttf"):
-            try:
-                return ImageFont.truetype(name, px)
-            except OSError:
-                continue
-        return ImageFont.load_default()
-    d.text((60, 120), "DocSigner", font=font(76), fill=WHITE)
-    d.text((62, 215), "Sign PDFs, Word docs", font=font(36, False), fill=(221, 214, 254))
-    d.text((62, 260), "& photos in seconds", font=font(36, False), fill=(221, 214, 254))
-    d.rounded_rectangle((62, 330, 330, 390), radius=30, fill=WHITE)
-    d.text((88, 340), "Scan · Sign · Share", font=font(28), fill=(67, 56, 202))
-    save(fg.convert("RGB"), os.path.join(out, "feature-graphic-1024x500.png"))
-
-
 if __name__ == "__main__":
     master = build_master()
     save(master, os.path.join(ROOT, "tools", "icon-master.png"))
     build_android(master)
     build_ios(master)
     build_splash_illustrations()
-    build_store(master)
     print("done")
